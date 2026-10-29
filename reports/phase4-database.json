@@ -1,0 +1,14 @@
+{
+  "server_version": "18.4",
+  "revision": "0003_registry",
+  "preserved_development_rows": {
+    "tenants": 1,
+    "users": 1,
+    "memberships": 1,
+    "machines": 1,
+    "sensors": 1,
+    "installations": 1
+  },
+  "legacy_unclassified_machines": 1,
+  "remaining_test_databases": 0
+}

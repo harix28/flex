@@ -1,0 +1,16 @@
+{
+  "revision": "0004_replay",
+  "development_counts": {
+    "tenants": 1,
+    "users": 1,
+    "memberships": 1,
+    "machines": 1,
+    "sensors": 1,
+    "installations": 1,
+    "replay_streams": 0,
+    "replay_batches": 0,
+    "replay_observations": 0
+  },
+  "ready": true,
+  "remaining_disposable_test_databases": 0
+}

@@ -1,0 +1,35 @@
+.venv/
+__pycache__/
+.pytest_cache/
+data/raw/
+runs/
+.env
+.env.*
+!.env.example
+.runtime/
+*.log
+request.json
+*.pyc
+
+!.env.container.example
+config/tls/
+
+# Generated frontend dependencies and build outputs
+node_modules/
+dist/
+*.tsbuildinfo
+apps/web/vite.config.js
+apps/web/vite.config.d.ts
+
+# Private keys and local databases
+*.pem
+*.key
+*.pfx
+*.p12
+*.sqlite
+*.sqlite3
+
+# Generated archives and presentation media (source/docs remain tracked)
+archives/
+resources/video/
+resources/interactive/Meridian_Sentinel_Interactive.html

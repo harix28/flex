@@ -1,0 +1,13 @@
+{
+  "name": "meridian-sentinel-full-architecture",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-both.js",
+    "dev:both": "node scripts/dev-both.js",
+    "dev:frontend": "npm --prefix apps/web run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "dev:backend": "node scripts/dev-both.js"
+  }
+}

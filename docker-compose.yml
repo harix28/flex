@@ -1,0 +1,84 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sentinel_owner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the explicit env file}
+      POSTGRES_DB: meridian
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinel_owner -d meridian"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [sentinel-network]
+
+  migrate:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://sentinel_owner:${POSTGRES_PASSWORD:?Required}@postgres:5432/meridian
+      SENTINEL_RUNTIME_PASSWORD: ${SENTINEL_RUNTIME_PASSWORD:?Set a distinct URL-safe runtime password}
+    command: ["python", "-m", "sentinel.container_setup"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [sentinel-network]
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://sentinel_app:${SENTINEL_RUNTIME_PASSWORD:?Required}@postgres:5432/meridian
+      SENTINEL_API_KEY: ${SENTINEL_API_KEY:?Set a generated API key}
+      SENTINEL_HOST: 0.0.0.0
+      SENTINEL_PORT: 8000
+      SENTINEL_CONTAINER_MODE: "true"
+      SENTINEL_AUTH_ENABLED: "true"
+      SENTINEL_AUTH_LOCALHOST: "false"
+      SENTINEL_AUTH_ORIGINS: ${SENTINEL_AUTH_ORIGINS:?Set the exact public HTTPS origin}
+      SENTINEL_MODEL_DIR: /app/models/fd001-v1
+      SENTINEL_BUNDLE_SHA256: 06d46a9c4f5f71aeb220ade135e52e713a0bd41f362e7caf00eda743442e7cfd
+      # Backend has no published port; only the private gateway may forward headers.
+      FORWARDED_ALLOW_IPS: "*"
+    volumes:
+      - ./runs/fd001-v1:/app/models/fd001-v1:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [sentinel-network]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    networks: [sentinel-network]
+
+  nginx:
+    build:
+      context: .
+      dockerfile: infra/nginx/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${GATEWAY_BIND:-127.0.0.1}:${GATEWAY_PORT:-8443}:443"
+    volumes:
+      - ./config/tls:/etc/nginx/tls:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    networks: [sentinel-network]
+
+volumes:
+  pg_data:
+networks:
+  sentinel-network:
+    driver: bridge

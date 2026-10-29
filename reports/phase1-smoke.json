@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-25",
+  "python": "3.12.15",
+  "url": "http://127.0.0.1:8001",
+  "checks": {
+    "/health": {
+      "http_status": 200,
+      "response": {
+        "status": "ok",
+        "model_loaded": true,
+        "mode": "local_experiment"
+      }
+    },
+    "/health/live": {
+      "http_status": 200,
+      "response": {
+        "status": "alive",
+        "mode": "local_experiment"
+      }
+    },
+    "/health/ready": {
+      "http_status": 200,
+      "response": {
+        "status": "ready",
+        "model_loaded": true,
+        "mode": "local_experiment"
+      }
+    },
+    "model_report": {
+      "http_status": 200,
+      "model_version": "fd001-v1"
+    },
+    "missing_auth": {
+      "http_status": 401,
+      "response": {
+        "error": {
+          "code": "authentication_required"
+        },
+        "request_id": "a8b224ec-00d9-4e47-90e7-cccf2e324af5"
+      }
+    },
+    "incorrect_auth": {
+      "http_status": 401,
+      "response": {
+        "error": {
+          "code": "authentication_required"
+        },
+        "request_id": "3ad79af1-ccfe-47ad-a20d-d8d65c479984"
+      }
+    },
+    "invalid_reading": {
+      "http_status": 422,
+      "response": {
+        "error": {
+          "code": "invalid_schema",
+          "message": "Check cycles, 3 settings and 21 finite sensor readings per observation."
+        },
+        "request_id": "658e1bfb-d1f9-405a-a4b0-c52ceef6d14a"
+      }
+    },
+    "insufficient_history": {
+      "http_status": 200,
+      "response": {
+        "status": "unavailable",
+        "reason": "insufficient_history",
+        "rul_cycles": null,
+        "failure_probability": null,
+        "interval": null,
+        "diagnosis_basis": "unavailable",
+        "model_version": "fd001-v1",
+        "data_mode": "replay",
+        "release_status": "experiment_only",
+        "engine_id": 1,
+        "subset": "FD001",
+        "request_id": "66818fc3-0750-44cf-950f-b709d5bad11a"
+      }
+    },
+    "incompatible_subset": {
+      "http_status": 200,
+      "response": {
+        "status": "unavailable",
+        "reason": "incompatible_subset",
+        "rul_cycles": null,
+        "failure_probability": null,
+        "interval": null,
+        "diagnosis_basis": "unavailable",
+        "model_version": "fd001-v1",
+        "data_mode": "replay",
+        "release_status": "experiment_only",
+        "engine_id": 1,
+        "subset": "FD004",
+        "request_id": "2025c98f-466b-44df-9eb7-47a2da0192ae"
+      }
+    }
+  },
+  "replay": {
+    "http_status": 200,
+    "response": {
+      "status": "available",
+      "reason": null,
+      "rul_cycles": 136.21971130371094,
+      "failure_probability": null,
+      "interval": null,
+      "diagnosis_basis": "unavailable",
+      "model_version": "fd001-v1",
+      "data_mode": "replay",
+      "release_status": "experiment_only",
+      "observed_cycle": 31,
+      "input_window_cycles": 30,
+      "engine_id": 1,
+      "subset": "FD001",
+      "request_id": "22560395-2e36-4b29-ab9b-d6b36ec803fa"
+    }
+  },
+  "saved_prediction_parity": true
+}

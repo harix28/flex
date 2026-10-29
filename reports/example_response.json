@@ -1,0 +1,16 @@
+{
+  "status": "available",
+  "reason": null,
+  "rul_cycles": 136.21971130371094,
+  "failure_probability": null,
+  "interval": null,
+  "diagnosis_basis": "unavailable",
+  "model_version": "fd001-v1",
+  "data_mode": "replay",
+  "release_status": "experiment_only",
+  "observed_cycle": 31,
+  "input_window_cycles": 30,
+  "engine_id": 1,
+  "subset": "FD001",
+  "request_id": "108e7430-6f3c-4f16-893c-c1aa341abee1"
+}

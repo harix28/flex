@@ -1,0 +1,78 @@
+{
+  "FD001": {
+    "status": "available",
+    "rul_cycles": 60.005271911621094,
+    "interval": {
+      "lower_cycles": 0,
+      "upper_cycles": 178.72559356689453,
+      "nominal_coverage": 0.9,
+      "empirical_validation_required": true
+    },
+    "interval_unavailable_reason": null,
+    "release_status": "offline_experiment_only",
+    "failure_probability": null,
+    "subset": "FD001",
+    "partition": "test",
+    "engine_id": 3,
+    "observed_cutoff_cycle": 126,
+    "units": "cycles",
+    "disclaimer": "Offline replay experiment. Nominal interval coverage is not a failure probability or a per-engine guarantee."
+  },
+  "FD002": {
+    "status": "available",
+    "rul_cycles": 24.312177658081055,
+    "interval": {
+      "lower_cycles": 0,
+      "upper_cycles": 124.04284477233887,
+      "nominal_coverage": 0.9,
+      "empirical_validation_required": true
+    },
+    "interval_unavailable_reason": null,
+    "release_status": "offline_experiment_only",
+    "failure_probability": null,
+    "subset": "FD002",
+    "partition": "test",
+    "engine_id": 1,
+    "observed_cutoff_cycle": 258,
+    "units": "cycles",
+    "disclaimer": "Offline replay experiment. Nominal interval coverage is not a failure probability or a per-engine guarantee."
+  },
+  "FD003": {
+    "status": "available",
+    "rul_cycles": 44.18948745727539,
+    "interval": {
+      "lower_cycles": 0,
+      "upper_cycles": 187.66089248657227,
+      "nominal_coverage": 0.9,
+      "empirical_validation_required": true
+    },
+    "interval_unavailable_reason": null,
+    "release_status": "offline_experiment_only",
+    "failure_probability": null,
+    "subset": "FD003",
+    "partition": "test",
+    "engine_id": 1,
+    "observed_cutoff_cycle": 233,
+    "units": "cycles",
+    "disclaimer": "Offline replay experiment. Nominal interval coverage is not a failure probability or a per-engine guarantee."
+  },
+  "FD004": {
+    "status": "available",
+    "rul_cycles": 26.666717529296875,
+    "interval": {
+      "lower_cycles": 0,
+      "upper_cycles": 173.6615753173828,
+      "nominal_coverage": 0.9,
+      "empirical_validation_required": true
+    },
+    "interval_unavailable_reason": null,
+    "release_status": "offline_experiment_only",
+    "failure_probability": null,
+    "subset": "FD004",
+    "partition": "test",
+    "engine_id": 1,
+    "observed_cutoff_cycle": 230,
+    "units": "cycles",
+    "disclaimer": "Offline replay experiment. Nominal interval coverage is not a failure probability or a per-engine guarantee."
+  }
+}

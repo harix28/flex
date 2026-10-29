@@ -1,0 +1,53 @@
+{
+  "transport": "real HTTP over loopback socket",
+  "database": "new disposable PostgreSQL database",
+  "http_statuses": {
+    "admin_login": 200,
+    "authenticated_me": 200,
+    "admin_member_list": 200,
+    "cross_tenant_read": 404,
+    "cross_tenant_write": 404,
+    "missing_csrf": 403,
+    "logout": 200,
+    "revoked_session": 401,
+    "viewer_login": 200,
+    "viewer_organization_read": 200,
+    "viewer_member_list_denied": 403,
+    "viewer_role_write_denied": 403,
+    "saved_model_replay": 200,
+    "health_live": 200,
+    "health_ready": 200,
+    "health_database": 200
+  },
+  "audit_counts": {
+    "logout": 1,
+    "bootstrap": 2,
+    "login_success": 2
+  },
+  "model_verification": {
+    "bundle_verified": true,
+    "model_report_verified": true,
+    "fd001_files_verified": 3,
+    "engine_id": 1,
+    "observed_cycle": 31,
+    "observations": 30,
+    "data_mode": "replay"
+  },
+  "prediction": {
+    "status": "available",
+    "reason": null,
+    "rul_cycles": 136.21971130371094,
+    "failure_probability": null,
+    "interval": null,
+    "diagnosis_basis": "unavailable",
+    "model_version": "fd001-v1",
+    "data_mode": "replay",
+    "release_status": "experiment_only",
+    "observed_cycle": 31,
+    "input_window_cycles": 30,
+    "engine_id": 1,
+    "subset": "FD001",
+    "request_id": "67f637a8-696d-46fd-aad1-284b700735d9"
+  },
+  "secrets_in_report": false
+}

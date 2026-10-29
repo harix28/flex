@@ -1,0 +1,13 @@
+{
+  "server_version": "18.4",
+  "revision": "0001_registry",
+  "rows_after_server_restart": {
+    "tenants": 1,
+    "users": 1,
+    "memberships": 1,
+    "machines": 1,
+    "sensors": 1,
+    "installations": 1
+  },
+  "remaining_generated_test_databases": 0
+}

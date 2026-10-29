@@ -1,0 +1,51 @@
+# Resolved Linux Python 3.12 dependency closure; Windows use requirements.txt
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+certifi==2026.10.19
+click==8.5.0
+fastapi==0.160.0
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.19
+iniconfig==2.3.1
+joblib==1.5.3
+numpy==2.3.5
+nvidia-nccl-cu13==2.32.3; sys_platform == "linux" and platform_machine == "x86_64"
+opentelemetry-api==1.45.1
+packaging==26.3
+pandas==2.2.3
+pluggy==1.7.0
+pydantic==2.14.0
+pydantic_core==2.50.0
+Pygments==2.21.0
+pytest==9.1.1
+python-dateutil==2.9.0.post0
+pytz==2026.5
+scikit-learn==1.8.0
+scipy==1.17.0
+six==1.17.0
+starlette==1.9.0
+threadpoolctl==3.6.0
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+tzdata==2026.5
+uvicorn==0.54.0
+xgboost==3.4.1
+
+# Phase 2 PostgreSQL foundation
+SQLAlchemy==2.0.55
+alembic==1.20.1
+psycopg[binary]==3.3.3
+greenlet==3.5.6
+Mako==1.4.3
+MarkupSafe==3.0.4
+
+# Phase 3 local identity
+argon2-cffi==25.1.0
+email-validator==2.3.0
+argon2-cffi-bindings==26.1.0
+cffi==2.1.1
+dnspython==2.9.0
+pycparser==3.12

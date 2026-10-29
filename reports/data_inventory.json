@@ -1,0 +1,30 @@
+{
+  "FD001": {
+    "training_engines": 100,
+    "training_rows": 20631,
+    "test_engines": 100,
+    "test_rows": 13096,
+    "model_trained": true
+  },
+  "FD002": {
+    "training_engines": 260,
+    "training_rows": 53759,
+    "test_engines": 259,
+    "test_rows": 33991,
+    "model_trained": false
+  },
+  "FD003": {
+    "training_engines": 100,
+    "training_rows": 24720,
+    "test_engines": 100,
+    "test_rows": 16596,
+    "model_trained": false
+  },
+  "FD004": {
+    "training_engines": 249,
+    "training_rows": 61249,
+    "test_engines": 248,
+    "test_rows": 41214,
+    "model_trained": false
+  }
+}

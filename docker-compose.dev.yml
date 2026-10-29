@@ -1,0 +1,13 @@
+# Explicit local HTTP demo. All application ports stay on the private network.
+services:
+  backend:
+    environment:
+      SENTINEL_AUTH_LOCALHOST: "true"
+      SENTINEL_AUTH_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+  nginx:
+    ports: !override
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./infra/nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/health/deployment"]

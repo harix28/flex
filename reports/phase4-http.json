@@ -1,0 +1,111 @@
+{
+  "transport": "real HTTP over loopback socket",
+  "database": "new disposable PostgreSQL database",
+  "http_statuses": {
+    "admin_login": 200,
+    "authenticated_me": 200,
+    "admin_member_list": 200,
+    "registry_machine_create": 201,
+    "registry_channels": 200,
+    "registry_sensor_create": 201,
+    "registry_installation_create": 201,
+    "registry_machine_detail": 200,
+    "registry_installation_history": 200,
+    "registry_duplicate": 409,
+    "registry_remove_installation": 200,
+    "cross_tenant_read": 404,
+    "cross_tenant_write": 404,
+    "missing_csrf": 403,
+    "logout": 200,
+    "revoked_session": 401,
+    "viewer_login": 200,
+    "viewer_organization_read": 200,
+    "viewer_member_list_denied": 403,
+    "viewer_role_write_denied": 403,
+    "registry_viewer_write_denied": 403,
+    "other_organization_login": 200,
+    "registry_cross_tenant_read": 404,
+    "registry_forged_machine_id": 404,
+    "saved_model_replay": 200,
+    "health_live": 200,
+    "health_ready": 200,
+    "health_database": 200
+  },
+  "audit_counts": {
+    "sensor_created": 22,
+    "installation_created": 22,
+    "logout": 1,
+    "bootstrap": 2,
+    "login_success": 3,
+    "machine_created": 2,
+    "installation_removed": 1
+  },
+  "model_verification": {
+    "bundle_verified": true,
+    "model_report_verified": true,
+    "fd001_files_verified": 3,
+    "engine_id": 1,
+    "observed_cycle": 31,
+    "observations": 30,
+    "data_mode": "replay"
+  },
+  "prediction": {
+    "status": "available",
+    "reason": null,
+    "rul_cycles": 136.21971130371094,
+    "failure_probability": null,
+    "interval": null,
+    "diagnosis_basis": "unavailable",
+    "model_version": "fd001-v1",
+    "data_mode": "replay",
+    "release_status": "experiment_only",
+    "observed_cycle": 31,
+    "input_window_cycles": 30,
+    "engine_id": 1,
+    "subset": "FD001",
+    "request_id": "9e97df81-c0d2-4c16-a0a9-9971e6ebbb28"
+  },
+  "prediction_is_separate_from_registry": true,
+  "registry": {
+    "machine_code": "HTTP-FD001-TEST-1",
+    "detail_api_path": "/api/v1/organizations/73f57318-7e9d-4fab-8e14-478d82b7b033/machines/da7e8c40-2684-43f2-bdd3-2f5da3e0eaf3",
+    "source_label": "Simulated dataset asset",
+    "health_status": "unknown",
+    "sensor_channels": 21,
+    "operating_settings": 3,
+    "raw_telemetry_persisted": false
+  },
+  "replay_cli_runs": [
+    {
+      "dataset": "C-MAPSS",
+      "subset": "FD001",
+      "split": "test",
+      "source_file_sha256": "3cda7109ce17bafb5443f2ac926cfcf88154b941b8c4cf95eb55d1ddd6f52851",
+      "validation": "local schema and engine presence; hash is provenance, not proof of official origin",
+      "results": [
+        {
+          "engine_id": 2,
+          "status": "registered",
+          "created": 43,
+          "existing": 0
+        }
+      ]
+    },
+    {
+      "dataset": "C-MAPSS",
+      "subset": "FD001",
+      "split": "test",
+      "source_file_sha256": "3cda7109ce17bafb5443f2ac926cfcf88154b941b8c4cf95eb55d1ddd6f52851",
+      "validation": "local schema and engine presence; hash is provenance, not proof of official origin",
+      "results": [
+        {
+          "engine_id": 2,
+          "status": "registered",
+          "created": 0,
+          "existing": 43
+        }
+      ]
+    }
+  ],
+  "secrets_in_report": false
+}

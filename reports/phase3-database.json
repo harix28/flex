@@ -1,0 +1,16 @@
+{
+  "server_version": "18.4",
+  "revision": "0002_auth",
+  "preserved_development_rows": {
+    "tenants": 1,
+    "users": 1,
+    "memberships": 1,
+    "machines": 1,
+    "sensors": 1,
+    "installations": 1
+  },
+  "development_local_password_identities": 0,
+  "remaining_test_databases": 0,
+  "verified_after_workspace_move": true,
+  "current_workspace": "H:\\HarixAI\\Projects\\Meridian_Sentinel\\Meridian_Sentinel_Full_Architecture"
+}
