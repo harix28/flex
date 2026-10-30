@@ -26,6 +26,9 @@ import {
   WorkOrderPriority,
   WorkOrderAction,
   ModelInfo,
+  PartItem,
+  TechnicianSchedule,
+  WorkOrderReadiness,
   MlObservability,
   MonitoringRunsResponse,
   MonitoringRunDetail,
@@ -783,4 +786,13 @@ export const mlopsApi = {
       { method: 'POST' }
     );
   },
+};
+
+export const planningApi = {
+  getInventory: (tenantId: string) =>
+    request<{ items: PartItem[] }>(`/api/v1/organizations/${tenantId}/planning/inventory`),
+  getShifts: (tenantId: string) =>
+    request<{ items: TechnicianSchedule[] }>(`/api/v1/organizations/${tenantId}/planning/shifts`),
+  getWorkOrderReadiness: (tenantId: string, workOrderId: string) =>
+    request<{ readiness: WorkOrderReadiness }>(`/api/v1/organizations/${tenantId}/planning/work-orders/${workOrderId}/readiness`),
 };

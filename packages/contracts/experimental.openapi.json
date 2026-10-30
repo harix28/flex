@@ -4465,6 +4465,264 @@
         }
       }
     },
+    "/api/v1/organizations/{organization_id}/planning/inventory": {
+      "get": {
+        "tags": [
+          "Maintenance Planning"
+        ],
+        "summary": "Get Inventory",
+        "description": "Lists warehouse spare parts, bin locations, and stock levels.",
+        "operationId": "get_inventory_api_v1_organizations__organization_id__planning_inventory_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/planning/inventory/{part_number}": {
+      "patch": {
+        "tags": [
+          "Maintenance Planning"
+        ],
+        "summary": "Update Stock",
+        "description": "Updates warehouse stock level for a part.",
+        "operationId": "update_stock_api_v1_organizations__organization_id__planning_inventory__part_number__patch",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "part_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Part Number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/planning/shifts": {
+      "get": {
+        "tags": [
+          "Maintenance Planning"
+        ],
+        "summary": "Get Shifts",
+        "description": "Lists technician shift schedules, qualifications, and on-duty status.",
+        "operationId": "get_shifts_api_v1_organizations__organization_id__planning_shifts_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/planning/shifts/{technician_id}": {
+      "patch": {
+        "tags": [
+          "Maintenance Planning"
+        ],
+        "summary": "Update Technician Duty",
+        "description": "Updates technician duty status.",
+        "operationId": "update_technician_duty_api_v1_organizations__organization_id__planning_shifts__technician_id__patch",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "technician_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Technician Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DutyUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/planning/work-orders/{work_order_id}/readiness": {
+      "get": {
+        "tags": [
+          "Maintenance Planning"
+        ],
+        "summary": "Get Work Order Readiness",
+        "description": "Evaluates warehouse parts availability and qualified staff readiness for a work order.",
+        "operationId": "get_work_order_readiness_api_v1_organizations__organization_id__planning_work_orders__work_order_id__readiness_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "work_order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Work Order Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -4719,6 +4977,20 @@
           "engine_id"
         ],
         "title": "Binding"
+      },
+      "DutyUpdate": {
+        "properties": {
+          "is_on_duty": {
+            "type": "boolean",
+            "title": "Is On Duty",
+            "description": "Whether technician is on duty"
+          }
+        },
+        "type": "object",
+        "required": [
+          "is_on_duty"
+        ],
+        "title": "DutyUpdate"
       },
       "HTTPValidationError": {
         "properties": {
@@ -5479,6 +5751,21 @@
           "file_sha256"
         ],
         "title": "Source"
+      },
+      "StockUpdate": {
+        "properties": {
+          "stock_qty": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Stock Qty",
+            "description": "New stock quantity in warehouse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stock_qty"
+        ],
+        "title": "StockUpdate"
       },
       "TestNotification": {
         "properties": {

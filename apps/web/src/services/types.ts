@@ -461,3 +461,46 @@ export interface MonitoringRunDetail {
 
 /** Narrow assignment lookup: no membership administration or email exposure. */
 export type EligibleAssignee = Omit<Member, 'email'>;
+
+// ==========================================
+// MAINTENANCE PLANNING & INVENTORY
+// ==========================================
+
+export interface PartItem {
+  part_number: string;
+  name: string;
+  category: string;
+  warehouse_bin: string;
+  stock_qty: number;
+  min_required: number;
+  unit_cost_usd: number;
+  compatible_subsystems: string[];
+}
+
+export interface TechnicianSchedule {
+  technician_id: string;
+  name: string;
+  shift_name: string;
+  shift_hours: string;
+  qualifications: string[];
+  is_on_duty: boolean;
+}
+
+export interface WorkOrderReadiness {
+  work_order_id: string;
+  status: string;
+  is_planning_ready: boolean;
+  readiness_summary: string;
+  blockers: string[];
+  parts_checklist: Array<{
+    task_code: string;
+    part_number: string;
+    name: string;
+    warehouse_bin: string;
+    available_stock: number;
+    in_stock: boolean;
+    status: 'AVAILABLE' | 'SHORTAGE';
+  }>;
+  assigned_technician?: TechnicianSchedule | null;
+  recommended_on_duty_technicians: TechnicianSchedule[];
+}
