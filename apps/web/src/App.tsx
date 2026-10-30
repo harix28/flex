@@ -54,11 +54,11 @@ const RoleBoundaryGuard: React.FC<RoleBoundaryGuardProps> = ({
         <ShieldAlert size={28} />
       </div>
       <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
-        Role Boundary Access Blocked
+        Access Restricted for Your Role
       </h2>
       <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: '1.5', marginBottom: '1.5rem' }}>
-        Access to <strong>{featureName}</strong> is strictly segregated to prevent cross-role operational interference.
-        This feature requires <strong>{requiredRole}</strong> clearance.
+        You cannot open <strong>{featureName}</strong> with your current account.
+        This section is reserved for <strong>{requiredRole}</strong> so everyone can focus on their own work without confusion.
       </p>
       <button
         type="button"
@@ -67,7 +67,7 @@ const RoleBoundaryGuard: React.FC<RoleBoundaryGuardProps> = ({
         style={{ margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
       >
         <ArrowLeft size={16} />
-        <span>Return to Permitted Workspace</span>
+        <span>Go Back to My Workspace</span>
       </button>
     </div>
   );

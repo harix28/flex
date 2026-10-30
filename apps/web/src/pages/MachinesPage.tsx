@@ -57,9 +57,9 @@ export const MachinesPage: React.FC<MachinesPageProps> = ({ onSelectMachine, onN
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Fleet Machine Registry</h1>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>All Engines & Equipment</h1>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-            Registered logical NASA replay test engines and physical hardware assets.
+            List of all monitored engines and machinery in your fleet, with sensor history and flight cycles.
           </p>
         </div>
 

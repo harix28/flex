@@ -80,9 +80,9 @@ export const WorkOrdersPage: React.FC<WorkOrdersPageProps> = ({ onSelectWorkOrde
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Maintenance Work Orders</h1>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Maintenance & Repair Tasks</h1>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-            Human review and approval gates. Predictions never automatically dispatch work or alter machinery.
+            Every job requires human review and sign-off. AI suggestions never start repairs or touch machinery on their own.
           </p>
         </div>
 

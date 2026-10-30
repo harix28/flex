@@ -294,7 +294,7 @@ export const WorkOrderDetailPage: React.FC<WorkOrderDetailPageProps> = ({
         >
           <AlertCircle size={20} style={{ flexShrink: 0 }} />
           <div>
-            <strong>Approval Gate Active:</strong> This work order is pending review and sign-off by the <strong>Maintenance Engineer</strong>. Field execution actions will be unlocked once formal approval is granted.
+            <strong>Waiting for Engineer Approval:</strong> This repair task is waiting for the <strong>Maintenance Engineer</strong> to review and approve it. Once approved, technicians can begin repair work.
           </div>
         </div>
       )}

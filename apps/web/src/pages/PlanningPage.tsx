@@ -103,7 +103,7 @@ export const PlanningPage: React.FC = () => {
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Maintenance Planning & Logistics</h1>
           </div>
           <p style={{ margin: '0.35rem 0 0', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-            Warehouse parts catalog, bin locations, technician shift availability, and work order dispatch readiness.
+            Check available spare parts, warehouse shelf locations, and which technicians are on duty today.
           </p>
         </div>
 

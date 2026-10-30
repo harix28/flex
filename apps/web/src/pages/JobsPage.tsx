@@ -76,7 +76,7 @@ export const JobsPage: React.FC = () => {
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Background Jobs & Fleet Scoring</h1>
           </div>
           <p style={{ margin: '0.35rem 0 0', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-            Transactional PostgreSQL outbox queue with atomic <code>FOR UPDATE SKIP LOCKED</code> claims and lease fencing.
+            Automated background tasks that check all engines for wear and tear safely in the background.
           </p>
         </div>
 

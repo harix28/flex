@@ -154,7 +154,7 @@ export const IntegrationsPage: React.FC = () => {
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Live Integrations, CMMS & Webhooks</h1>
           </div>
           <p style={{ margin: '0.35rem 0 0', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-            Industrial IoT edge gateways (MQTT/OPC-UA), enterprise CMMS adapters (SAP PM/Maximo), and HMAC-signed webhook alerting.
+            Connect live factory sensors, export approved jobs to SAP or Maximo, and send instant alert notifications.
           </p>
         </div>
 

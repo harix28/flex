@@ -16,6 +16,10 @@ import {
   ChevronRight,
   Filter,
   RefreshCw,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  Plane,
 } from 'lucide-react';
 
 interface OverviewPageProps {
@@ -33,6 +37,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<{ message: string; requestId?: string } | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   const fetchPriorities = useCallback(async (silent = false) => {
     if (!activeTenant) return;
@@ -48,7 +53,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
       setData(res);
     } catch (err: any) {
       setError({
-        message: err.message || 'Failed to fetch fleet maintenance priorities',
+        message: err.message || 'Unable to check fleet engine health right now. Please try again.',
         requestId: err.requestId,
       });
     } finally {
@@ -83,17 +88,51 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
 
   const totalMachines = data?.total ?? 0;
 
+  const getLaymanExplanation = (item: MaintenancePriorityItem) => {
+    if (item.priority_band === 'urgent') {
+      const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '<15';
+      return `Critical wear: only about ${left} flights left. Needs immediate inspection before flying again.`;
+    }
+    if (item.priority_band === 'high') {
+      const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '15-35';
+      return `Noticeable wear: about ${left} flights left. Schedule a maintenance check in the next few days.`;
+    }
+    if (item.priority_band === 'medium') {
+      const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '35-75';
+      return `Normal wear: about ${left} flights left. Plan regular checkup during upcoming standard maintenance.`;
+    }
+    if (item.priority_band === 'low') {
+      const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '>75';
+      return `Engine is healthy: plenty of flight life left (${left} flights). Working smoothly, no action needed.`;
+    }
+    return item.explanation || 'Waiting for more flight sensor recordings to estimate remaining life.';
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Title & Refresh */}
+      {/* Title & Refresh Controls */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Fleet Maintenance Overview</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-            Deterministic priority ranking based on causal trailing RUL predictions ({data?.policy_version || 'v1-experimental'}).
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Plane size={24} style={{ color: 'var(--primary)' }} />
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Engine Health & Maintenance Dashboard</h1>
+          </div>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.35rem' }}>
+            A simple overview showing which engines need attention first, so your team can fix issues before a breakdown happens.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowGuide(!showGuide)}
+            style={{ fontSize: '0.8125rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+          >
+            <Info size={14} style={{ color: 'var(--primary)' }} />
+            <span>{showGuide ? 'Hide Simple Guide' : 'How It Works (Simple Guide)'}</span>
+            {showGuide ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
+
           <button
             type="button"
             className={`btn ${autoRefresh ? 'btn-primary' : 'btn-secondary'}`}
@@ -118,7 +157,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                 boxShadow: autoRefresh ? '0 0 6px #22c55e' : 'none',
               }}
             />
-            <span>{autoRefresh ? 'Auto-Refresh: ON' : 'Auto-Refresh: OFF'}</span>
+            <span>{autoRefresh ? 'Live Auto-Update: ON' : 'Live Auto-Update: OFF'}</span>
           </button>
 
           <button
@@ -129,10 +168,48 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             style={{ fontSize: '0.8125rem' }}
           >
             <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-            <span>Refresh Fleet Status</span>
+            <span>Refresh Status</span>
           </button>
         </div>
       </div>
+
+      {/* Plain English Beginner's Guide (Collapsible) */}
+      {showGuide && (
+        <div
+          className="card card-elevated"
+          style={{
+            backgroundColor: 'rgba(14, 165, 233, 0.05)',
+            border: '1px solid rgba(14, 165, 233, 0.3)',
+            padding: '1.25rem',
+            borderRadius: 'var(--radius-md)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', color: 'var(--primary)' }}>
+            <Info size={18} />
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>Beginner's Guide to this Dashboard</h3>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+            <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>1. What is a "Cycle"?</strong>
+              In aviation and plant machinery, <strong>1 cycle = 1 full flight</strong> (engine startup, takeoff, flight, and landing).
+            </div>
+            <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>2. What are "Flights Left"?</strong>
+              Our smart sensor checks calculate how many more flights this engine can safely complete before requiring workshop service.
+            </div>
+            <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>3. How Urgency is Decided:</strong>
+              <span style={{ color: '#ef4444' }}>Red (&le;15 flights)</span> = Service now. <br />
+              <span style={{ color: '#f59e0b' }}>Yellow (15-35 flights)</span> = Plan checkup soon. <br />
+              <span style={{ color: '#10b981' }}>Green (&gt;75 flights)</span> = All good, safe to fly.
+            </div>
+            <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>4. Safety Always Comes First:</strong>
+              Computers only give recommendations. A real human maintenance engineer must review and approve every single repair job.
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Fleet Priority Metric Summary Cards */}
       <div className="grid-cols-4">
@@ -147,14 +224,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
           onClick={() => setSelectedBand(selectedBand === 'urgent' ? 'all' : 'urgent')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--urgent-text)' }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, textTransform: 'uppercase' }}>Urgent Priority</span>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase' }}>Needs Immediate Service</span>
             <ShieldAlert size={18} />
           </div>
           <div style={{ fontSize: '2rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }} className="mono">
             {summary.urgent}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Estimated RUL &le; 15 cycles
+            &le; 15 flights remaining &bull; Inspect immediately
           </div>
         </div>
 
@@ -169,14 +246,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
           onClick={() => setSelectedBand(selectedBand === 'high' ? 'all' : 'high')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--high-text)' }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, textTransform: 'uppercase' }}>High Priority</span>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase' }}>Needs Service Soon</span>
             <AlertTriangle size={18} />
           </div>
           <div style={{ fontSize: '2rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }} className="mono">
             {summary.high}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            15 &lt; RUL &le; 35 cycles
+            15 to 35 flights remaining &bull; Plan repair this week
           </div>
         </div>
 
@@ -191,14 +268,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
           onClick={() => setSelectedBand(selectedBand === 'medium' ? 'all' : 'medium')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--medium-text)' }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, textTransform: 'uppercase' }}>Medium Priority</span>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase' }}>Normal Checkup Due</span>
             <Clock size={18} />
           </div>
           <div style={{ fontSize: '2rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }} className="mono">
             {summary.medium}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            35 &lt; RUL &le; 75 cycles
+            35 to 75 flights remaining &bull; Standard routine wear
           </div>
         </div>
 
@@ -213,19 +290,19 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
           onClick={() => setSelectedBand(selectedBand === 'low' ? 'all' : 'low')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--low-text)' }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 600, textTransform: 'uppercase' }}>Low Priority</span>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 700, textTransform: 'uppercase' }}>Healthy & Good to Fly</span>
             <CheckCircle size={18} />
           </div>
           <div style={{ fontSize: '2rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }} className="mono">
             {summary.low}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            RUL &gt; 75 cycles
+            &gt; 75 flights remaining &bull; Running smoothly
           </div>
         </div>
       </div>
 
-      {/* Outdated / Unknown Notice Bar */}
+      {/* Outdated / Unknown Simple Notice Bar */}
       {(summary.outdated > 0 || summary.unknown > 0) && (
         <div
           style={{
@@ -240,57 +317,74 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'var(--outdated-text)' }}>
-            <AlertCircle size={16} />
-            <span>
-              <strong>{summary.outdated} Outdated Prediction{summary.outdated === 1 ? '' : 's'}:</strong> Newer telemetry ingested since evaluation.
-            </span>
-          </div>
+          {summary.outdated > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'var(--outdated-text)' }}>
+              <AlertCircle size={16} />
+              <span>
+                <strong>{summary.outdated} Engine{summary.outdated === 1 ? '' : 's'} Need Update:</strong> Newer flight sensor recordings have arrived. Click 'Refresh Status' to recalculate.
+              </span>
+            </div>
+          )}
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'var(--unknown-text)' }}>
-            <HelpCircle size={16} />
-            <span>
-              <strong>{summary.unknown} Unpredicted / Unavailable:</strong> Telemetry insufficient or missing cycles.
-            </span>
-          </div>
+          {summary.unknown > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'var(--unknown-text)' }}>
+              <HelpCircle size={16} />
+              <span>
+                <strong>{summary.unknown} Waiting for Sensor Data:</strong> Needs more flight recordings before remaining flights can be calculated.
+              </span>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Filter Tabs & Dataset Selector */}
+      {/* Filter Tabs & Fleet Group Selector */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <Filter size={14} /> Priority Band:
+            <Filter size={14} /> Filter by Urgency:
           </span>
-          {(['all', 'urgent', 'high', 'medium', 'low', 'unknown'] as const).map((band) => (
+          {[
+            { id: 'all', label: `All Engines (${totalMachines})` },
+            { id: 'urgent', label: `Immediate Service (${summary.urgent})` },
+            { id: 'high', label: `Service Soon (${summary.high})` },
+            { id: 'medium', label: `Normal Checkup (${summary.medium})` },
+            { id: 'low', label: `Healthy (${summary.low})` },
+            { id: 'unknown', label: `Needs Data (${summary.unknown})` },
+          ].map((tab) => (
             <button
-              key={band}
+              key={tab.id}
               type="button"
-              className={`btn ${selectedBand === band ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem', textTransform: 'capitalize' }}
+              className={`btn ${selectedBand === tab.id ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}
               onClick={() => {
-                setSelectedBand(band);
+                setSelectedBand(tab.id as any);
                 setOffset(0);
               }}
             >
-              {band === 'all' ? 'All Bands' : band}
+              {tab.label}
             </button>
           ))}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-            NASA Dataset:
+            Engine Fleet Group:
           </span>
-          {(['all', 'FD001', 'FD002', 'FD003', 'FD004'] as const).map((sub) => (
+          {[
+            { id: 'all', label: 'All Fleets' },
+            { id: 'FD001', label: 'Fleet 1 (Sea Level)' },
+            { id: 'FD002', label: 'Fleet 2 (Multi-altitude)' },
+            { id: 'FD003', label: 'Fleet 3 (Dual Faults)' },
+            { id: 'FD004', label: 'Fleet 4 (Heavy Operations)' },
+          ].map((sub) => (
             <button
-              key={sub}
+              key={sub.id}
               type="button"
-              className={`btn ${selectedSubset === sub ? 'btn-primary' : 'btn-secondary'}`}
+              className={`btn ${selectedSubset === sub.id ? 'btn-primary' : 'btn-secondary'}`}
               style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}
-              onClick={() => setSelectedSubset(sub)}
+              onClick={() => setSelectedSubset(sub.id as any)}
             >
-              {sub === 'all' ? 'All Datasets' : sub}
+              {sub.label}
             </button>
           ))}
         </div>
@@ -307,14 +401,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
 
       {/* Main Table / Loading / Empty */}
       {isLoading ? (
-        <LoadingState message="Fetching deterministic maintenance priorities..." />
+        <LoadingState message="Checking engine health and calculating remaining flights..." />
       ) : !data || data.items.length === 0 ? (
         <EmptyState
-          title={selectedBand === 'all' ? 'No Registered Machines Found' : `No ${selectedBand} Priority Machines`}
+          title={selectedBand === 'all' ? 'No Registered Engines Found' : `No Engines in this Urgency Category`}
           description={
             selectedBand === 'all'
-              ? 'No machines are currently registered in this organization. Register test engines or physical assets to begin tracking degradation.'
-              : `There are currently no machines classified under the ${selectedBand} maintenance priority band.`
+              ? 'No engines or equipment are registered in this organization yet. Add an engine to begin checking health.'
+              : `There are currently no engines classified in the selected category.`
           }
           action={
             selectedBand === 'all' ? (
@@ -323,7 +417,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                 className="btn btn-primary"
                 onClick={onNavigateToRegistry}
               >
-                Go to Registry Management
+                Go to Engine Setup
               </button>
             ) : (
               <button
@@ -331,7 +425,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                 className="btn btn-secondary"
                 onClick={() => setSelectedBand('all')}
               >
-                Clear Filter
+                Show All Engines
               </button>
             )
           }
@@ -341,13 +435,13 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
           <table className="table">
             <thead>
               <tr>
-                <th>Machine Asset Code</th>
-                <th>Source Type</th>
-                <th>Estimated Remaining Cycles</th>
-                <th>Maintenance Priority</th>
-                <th>Prediction Cutoff</th>
-                <th>Evidence Status</th>
-                <th>Policy Rule Explanation</th>
+                <th>Engine Code &amp; Name</th>
+                <th>Engine Type</th>
+                <th>Estimated Flights Left</th>
+                <th>Urgency Level</th>
+                <th>Last Flight Checked</th>
+                <th>Data Freshness</th>
+                <th>Why this status? (Simple Reason)</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -372,13 +466,13 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
 
                     <td>
                       <span className="badge badge-unknown" style={{ fontSize: '0.7rem' }}>
-                        {item.machine_type === 'cmapss_engine' ? 'NASA C-MAPSS Replay' : 'Physical Asset'}
+                        {item.machine_type === 'cmapss_engine' ? 'Simulated Test Engine' : 'Real Factory Engine'}
                       </span>
                     </td>
 
                     <td>
                       {item.status === 'available' && item.rul_cycles !== null ? (
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem' }}>
                           <span
                             className="mono"
                             style={{
@@ -390,12 +484,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                             {item.rul_cycles.toFixed(1)}
                           </span>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                            cycles
+                            flights left
                           </span>
                         </div>
                       ) : (
                         <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', fontStyle: 'italic' }}>
-                          Unavailable ({item.reason || 'unpredicted'})
+                          Waiting for data ({item.reason || 'unmeasured'})
                         </span>
                       )}
                     </td>
@@ -407,7 +501,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                     <td>
                       {item.prediction_cutoff_cycle ? (
                         <span className="mono" style={{ fontSize: '0.8125rem' }}>
-                          Cycle {item.prediction_cutoff_cycle}
+                          Flight {item.prediction_cutoff_cycle}
                         </span>
                       ) : (
                         <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>—</span>
@@ -416,25 +510,25 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
 
                     <td>
                       {item.is_outdated ? (
-                        <span className="badge badge-outdated" title="Newer telemetry has arrived">
+                        <span className="badge badge-outdated" title="New sensor readings have arrived since this was calculated">
                           <AlertCircle size={12} />
-                          <span>Outdated (C{item.latest_observation_cycle})</span>
+                          <span>Needs Recalculate (New Data)</span>
                         </span>
                       ) : item.is_current ? (
                         <span className="badge badge-low">
                           <CheckCircle size={12} />
-                          <span>Current</span>
+                          <span>Up to Date</span>
                         </span>
                       ) : (
                         <span className="badge badge-unknown">
                           <HelpCircle size={12} />
-                          <span>Unmeasured</span>
+                          <span>Waiting for Readings</span>
                         </span>
                       )}
                     </td>
 
-                    <td style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', maxWidth: '280px' }}>
-                      {item.explanation}
+                    <td style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', maxWidth: '300px', lineHeight: '1.4' }}>
+                      {getLaymanExplanation(item)}
                     </td>
 
                     <td onClick={(e) => e.stopPropagation()}>
@@ -442,9 +536,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                         type="button"
                         className="btn btn-secondary"
                         onClick={() => onSelectMachine(item.machine_id)}
-                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem' }}
+                        style={{ padding: '0.3rem 0.65rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
                       >
-                        <span>Details</span>
+                        <span>View Details</span>
                         <ChevronRight size={13} />
                       </button>
                     </td>
@@ -468,7 +562,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             }}
           >
             <span>
-              Showing {data.items.length} of {totalMachines} registered fleet machines
+              Showing {data.items.length} of {totalMachines} engines in your fleet
             </span>
 
             <div style={{ display: 'flex', gap: '0.5rem' }}>

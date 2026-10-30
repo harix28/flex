@@ -43,33 +43,33 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
   if (isTechnician) {
     // Role 3: Maintenance Technician Allocation (Execution, telemetry inspection, parts lookup)
     navItems = [
-      { id: 'work-orders', label: 'My Assigned Work Orders', icon: Wrench },
-      { id: 'machines', label: 'Assigned Engines & Telemetry', icon: Cpu },
-      { id: 'planning', label: 'Warehouse Parts Lookup', icon: Boxes },
+      { id: 'work-orders', label: 'My Assigned Tasks', icon: Wrench },
+      { id: 'machines', label: 'Assigned Engines & Sensors', icon: Cpu },
+      { id: 'planning', label: 'Warehouse Spare Parts', icon: Boxes },
     ];
   } else if (isMaintenanceEngineer && !isGeneralManager) {
     // Role 2: Maintenance Engineer Allocation (Planning, approvals, fleet scoring, MLOps)
     navItems = [
-      { id: 'overview', label: 'Engineering Dashboard', icon: LayoutDashboard },
-      { id: 'machines', label: 'Fleet Machines & Health', icon: Cpu },
-      { id: 'work-orders', label: 'Work Orders & Approvals', icon: Wrench },
-      { id: 'planning', label: 'Maintenance Planning', icon: Boxes },
-      { id: 'jobs', label: 'Fleet Scoring & Jobs', icon: ListChecks },
-      { id: 'model-monitoring', label: 'Model Observability & MLOps', icon: Activity },
-      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }] : []),
+      { id: 'overview', label: 'Engine Health Dashboard', icon: LayoutDashboard },
+      { id: 'machines', label: 'All Engines & Equipment', icon: Cpu },
+      { id: 'work-orders', label: 'Repair Jobs & Approvals', icon: Wrench },
+      { id: 'planning', label: 'Spare Parts & Shift Rosters', icon: Boxes },
+      { id: 'jobs', label: 'Automated Engine Checkups', icon: ListChecks },
+      { id: 'model-monitoring', label: 'AI Accuracy & Health Checks', icon: Activity },
+      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Machine Settings', icon: Layers }] : []),
     ];
   } else {
     // Role 1: General Manager (Admin) Allocation (Executive oversight, members, integrations)
     navItems = [
-      { id: 'overview', label: 'Executive Overview', icon: LayoutDashboard },
-      { id: 'machines', label: 'Fleet Registry', icon: Cpu },
-      { id: 'work-orders', label: 'Work Orders Oversight', icon: Wrench },
-      { id: 'planning', label: 'Maintenance Planning', icon: Boxes },
-      { id: 'jobs', label: 'Background Outbox Jobs', icon: ListChecks },
-      { id: 'integrations', label: 'Live Integrations & Security', icon: Share2 },
-      { id: 'model-monitoring', label: 'Model Observability', icon: Activity },
-      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }] : []),
-      ...(canManageMembers() ? [{ id: 'members' as NavigationPage, label: 'Organization Members', icon: Users }] : []),
+      { id: 'overview', label: 'Executive Health Dashboard', icon: LayoutDashboard },
+      { id: 'machines', label: 'All Engines & Equipment', icon: Cpu },
+      { id: 'work-orders', label: 'Repair Jobs Oversight', icon: Wrench },
+      { id: 'planning', label: 'Spare Parts & Shift Rosters', icon: Boxes },
+      { id: 'jobs', label: 'Automated Engine Checkups', icon: ListChecks },
+      { id: 'integrations', label: 'Connected Systems & APIs', icon: Share2 },
+      { id: 'model-monitoring', label: 'AI Accuracy & Health Checks', icon: Activity },
+      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Machine Settings', icon: Layers }] : []),
+      ...(canManageMembers() ? [{ id: 'members' as NavigationPage, label: 'Team Members & Access', icon: Users }] : []),
     ];
   }
 
@@ -177,7 +177,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
                     textTransform: 'uppercase',
                   }}
                 >
-                  Condition Monitoring Portal
+                  Easy Engine Health & Repair Portal
                 </span>
               </div>
             </div>
