@@ -5,8 +5,13 @@ import { LoginPage } from './pages/LoginPage';
 import { OverviewPage } from './pages/OverviewPage';
 import { MachinesPage } from './pages/MachinesPage';
 import { MachineDetailPage } from './pages/MachineDetailPage';
+import { MaintenancePriorityPage } from './pages/MaintenancePriorityPage';
+import { SensorAnalyticsPage } from './pages/SensorAnalyticsPage';
+import { FailurePredictionsPage } from './pages/FailurePredictionsPage';
 import { WorkOrdersPage } from './pages/WorkOrdersPage';
 import { WorkOrderDetailPage } from './pages/WorkOrderDetailPage';
+import { ReportsPage } from './pages/ReportsPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { RegistryPage } from './pages/RegistryPage';
 import { MembersPage } from './pages/MembersPage';
 import { ModelMonitoringPage } from './pages/ModelMonitoringPage';
@@ -33,8 +38,18 @@ export const App: React.FC = () => {
         setSelectedWorkOrderId(id);
       } else if (route === 'machines') {
         setCurrentPage('machines');
-      } else if (route === 'work-orders') {
-        setCurrentPage('work-orders');
+      } else if (route === 'maintenance-priority') {
+        setCurrentPage('maintenance-priority');
+      } else if (route === 'sensor-analytics') {
+        setCurrentPage('sensor-analytics');
+      } else if (route === 'failure-predictions') {
+        setCurrentPage('failure-predictions');
+      } else if (route === 'maintenance-history' || route === 'work-orders') {
+        setCurrentPage('maintenance-history');
+      } else if (route === 'reports') {
+        setCurrentPage('reports');
+      } else if (route === 'settings') {
+        setCurrentPage('settings');
       } else if (route === 'model-monitoring') {
         setCurrentPage('model-monitoring');
       } else if (route === 'registry') {
@@ -101,26 +116,42 @@ export const App: React.FC = () => {
       )}
 
       {currentPage === 'machine-detail' && selectedMachineId && (
-        <MachineDetailPage key={selectedMachineId}
+        <MachineDetailPage
+          key={selectedMachineId}
           machineId={selectedMachineId}
           onNavigateBack={() => navigateTo('machines')}
           onSelectWorkOrder={(woId) => navigateTo('work-order-detail', { workOrderId: woId })}
         />
       )}
 
-      {currentPage === 'work-orders' && (
+      {currentPage === 'maintenance-priority' && (
+        <MaintenancePriorityPage
+          onSelectMachine={(mId) => navigateTo('machine-detail', { machineId: mId })}
+        />
+      )}
+
+      {currentPage === 'sensor-analytics' && <SensorAnalyticsPage />}
+
+      {currentPage === 'failure-predictions' && <FailurePredictionsPage />}
+
+      {(currentPage === 'maintenance-history' || currentPage === 'work-orders') && (
         <WorkOrdersPage
           onSelectWorkOrder={(woId) => navigateTo('work-order-detail', { workOrderId: woId })}
         />
       )}
 
       {currentPage === 'work-order-detail' && selectedWorkOrderId && (
-        <WorkOrderDetailPage key={selectedWorkOrderId}
+        <WorkOrderDetailPage
+          key={selectedWorkOrderId}
           workOrderId={selectedWorkOrderId}
-          onNavigateBack={() => navigateTo('work-orders')}
+          onNavigateBack={() => navigateTo('maintenance-history')}
           onSelectMachine={(mId) => navigateTo('machine-detail', { machineId: mId })}
         />
       )}
+
+      {currentPage === 'reports' && <ReportsPage />}
+
+      {currentPage === 'settings' && <SettingsPage />}
 
       {currentPage === 'model-monitoring' && <ModelMonitoringPage />}
 

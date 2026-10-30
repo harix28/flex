@@ -25,6 +25,7 @@ import {
   Plus,
   RefreshCw,
   ChevronRight,
+  AlertCircle,
 } from 'lucide-react';
 
 interface MachineDetailPageProps {
@@ -221,6 +222,27 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
               <span>Draft Work Order</span>
             </button>
           )}
+        </div>
+      </div>
+
+      
+      {/* Required Industrial RUL Disclaimer */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          backgroundColor: '#eff6ff',
+          border: '1px solid #bfdbfe',
+          borderRadius: 'var(--radius-md)',
+          padding: '0.75rem 1rem',
+          fontSize: '0.8125rem',
+          color: '#1e40af',
+        }}
+      >
+        <AlertCircle size={18} color="#2563eb" style={{ flexShrink: 0 }} />
+        <div>
+          <strong>Operational Notice:</strong> Predictions are estimates based on available sensor data and should be validated before maintenance decisions.
         </div>
       </div>
 
