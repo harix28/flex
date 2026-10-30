@@ -62,7 +62,7 @@ def compute_and_persist(
     if predictor is None:
         raise HTTPException(503, 'model_not_loaded')
 
-    model_meta = predictor.meta
+    model_meta = predictor.get_meta(machine['source_subset']) if hasattr(predictor, 'get_meta') else predictor.meta
     model_version = str(model_meta['version'])
     model_digest = str(model_meta['model_sha256'])
     bundle_digest = str(hashlib.sha256(json.dumps(model_meta, sort_keys=True, separators=(',', ':')).encode()).hexdigest()) if 'bundle_sha256' not in model_meta else str(model_meta['bundle_sha256'])
@@ -84,7 +84,8 @@ def compute_and_persist(
             model_version, model_digest, bundle_digest, 1, 1, None, policy.version, band, rule
         )
 
-    if machine['source_subset'] != model_meta['subset']:
+    supports = predictor.supports_subset(machine['source_subset']) if hasattr(predictor, 'supports_subset') else (machine['source_subset'] == model_meta['subset'])
+    if not supports:
         status = 'unavailable'
         reason = 'unsupported_subset'
         requested_cutoff = cutoff_cycle if cutoff_cycle is not None else 1
@@ -203,7 +204,7 @@ def compute_and_persist(
     infer_ms = None
     try:
         infer_start = time.perf_counter()
-        pred_result = predictor.predict(model_meta['subset'], records)
+        pred_result = predictor.predict(machine['source_subset'], records)
         infer_ms = (time.perf_counter() - infer_start) * 1000.0
         if pred_result['status'] == 'available':
             status = 'available'

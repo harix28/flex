@@ -44,7 +44,8 @@ def create_app(predictor=None, api_key=None, *, settings=None):
     api_key = validate_api_key(api_key if api_key is not None else settings.api_key)
     if predictor is None and settings is not None and settings.model_dir is not None:
         try:
-            predictor = Predictor(settings.model_dir, settings.bundle_sha256)
+            from .inference import load_multi_predictor
+            predictor = load_multi_predictor(settings.model_dir, settings.bundle_sha256)
         except Exception:
             raise ConfigurationError('Model bundle rejected: check trusted manifest, artifact hashes, schema and file access') from None
     database = Database(settings.database_url) if settings and settings.database_url else None

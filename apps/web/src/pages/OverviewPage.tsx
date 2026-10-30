@@ -27,7 +27,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
   const { activeTenant } = useAuth();
   const [data, setData] = useState<MaintenancePrioritiesResponse | null>(null);
   const [selectedBand, setSelectedBand] = useState<PriorityBand | 'all'>('all');
-  const [limit] = useState(25);
+  const [selectedSubset, setSelectedSubset] = useState<'all' | 'FD001' | 'FD002' | 'FD003' | 'FD004'>('all');
+  const [limit] = useState(50);
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<{ message: string; requestId?: string } | null>(null);
@@ -255,25 +256,44 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
         </div>
       )}
 
-      {/* Filter Tabs */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-          <Filter size={14} /> Filter band:
-        </span>
-        {(['all', 'urgent', 'high', 'medium', 'low', 'unknown'] as const).map((band) => (
-          <button
-            key={band}
-            type="button"
-            className={`btn ${selectedBand === band ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem', textTransform: 'capitalize' }}
-            onClick={() => {
-              setSelectedBand(band);
-              setOffset(0);
-            }}
-          >
-            {band === 'all' ? 'All Machines' : band}
-          </button>
-        ))}
+      {/* Filter Tabs & Dataset Selector */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Filter size={14} /> Priority Band:
+          </span>
+          {(['all', 'urgent', 'high', 'medium', 'low', 'unknown'] as const).map((band) => (
+            <button
+              key={band}
+              type="button"
+              className={`btn ${selectedBand === band ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem', textTransform: 'capitalize' }}
+              onClick={() => {
+                setSelectedBand(band);
+                setOffset(0);
+              }}
+            >
+              {band === 'all' ? 'All Bands' : band}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+            NASA Dataset:
+          </span>
+          {(['all', 'FD001', 'FD002', 'FD003', 'FD004'] as const).map((sub) => (
+            <button
+              key={sub}
+              type="button"
+              className={`btn ${selectedSubset === sub ? 'btn-primary' : 'btn-secondary'}`}
+              style={{ fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}
+              onClick={() => setSelectedSubset(sub)}
+            >
+              {sub === 'all' ? 'All Datasets' : sub}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Error State */}
@@ -332,7 +352,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
               </tr>
             </thead>
             <tbody>
-              {data.items.map((item: MaintenancePriorityItem) => {
+              {data.items
+                .filter((item: MaintenancePriorityItem) => selectedSubset === 'all' || item.asset_code.includes(selectedSubset))
+                .map((item: MaintenancePriorityItem) => {
                 return (
                   <tr
                     key={item.machine_id}

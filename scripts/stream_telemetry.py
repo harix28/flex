@@ -5,7 +5,7 @@ triggering live data ingestion, causal feature extraction, and real-time RUL pre
 
 Usage:
     python scripts/stream_telemetry.py --asset NASA-FD001-TRAIN-1 --interval 1.5
-    python scripts/stream_telemetry.py --asset NASA-FD001-TRAIN-1 --reset --start-cycle 1 --interval 1.0
+    python scripts/stream_telemetry.py --asset NASA-FD001-TRAIN-1 --reset --start-cycle 1 --interval 1.0 --loop
 """
 import argparse
 import hashlib
@@ -33,6 +33,7 @@ def parse_args():
     parser.add_argument("--start-cycle", type=int, default=None, help="Start cycle (default: resume after latest or 1)")
     parser.add_argument("--end-cycle", type=int, default=None, help="End cycle (default: trajectory end)")
     parser.add_argument("--reset", action="store_true", help="Reset existing observations and predictions for this machine before streaming")
+    parser.add_argument("--loop", action="store_true", help="Continuously loop the degradation lifecycle")
     return parser.parse_args()
 
 
@@ -92,7 +93,7 @@ class StreamClient:
             headers={"Origin": self.origin},
         )
         if res.status_code == 200:
-            return res.json().get("max_cycle") or 0
+            return res.json().get("latest_cycle") or 0
         return 0
 
     def ingest_cycle(self, machine_id: str, source: dict, observation: dict):
@@ -160,38 +161,26 @@ def reset_machine_data(tenant_id: str, machine_id: str):
     print(f"[RESET] Cleared observations and predictions for machine {machine_id}")
 
 
-def main():
-    args = parse_args()
-    client = StreamClient(args.origin, args.email, args.password)
-    try:
-        client.login()
-        machine = client.get_machine(args.asset)
-        machine_id = machine["id"]
-        binding = machine.get("source_binding") or {}
-        subset = binding.get("subset", "FD001")
-        partition = binding.get("split", "train")
-        engine_id = binding.get("engine_id", 1)
+def run_stream_loop(client, machine, source, rows, args):
+    machine_id = machine["id"]
+    total_cycles = len(rows)
 
-        print(f"[STREAM TARGET] Asset: {args.asset} (ID: {machine_id})")
-        print(f"[STREAM TARGET] Dataset: C-MAPSS {subset} | Partition: {partition} | Engine ID: {engine_id}")
-
-        if args.reset:
-            reset_machine_data(client.tenant_id, machine_id)
-
-        data_dir = Path(__file__).resolve().parents[1] / "data/raw"
-        source, rows = load_trajectory(data_dir, subset, partition, engine_id)
-        total_cycles = len(rows)
-        print(f"[DATA] Loaded {total_cycles} cycles from {partition}_{subset}.txt")
-
+    while True:
         latest_cycle = 0 if args.reset else client.get_latest_cycle(machine_id)
         start_cycle = args.start_cycle if args.start_cycle is not None else (latest_cycle + 1)
         end_cycle = args.end_cycle if args.end_cycle is not None else total_cycles
 
         if start_cycle > total_cycles:
-            print(f"[STREAM] Machine already has all {total_cycles} cycles ingested! Use --reset to re-stream.")
-            return
+            if args.loop:
+                print(f"[LOOP] Machine reached final cycle {total_cycles}. Restarting lifecycle in 3 seconds...")
+                time.sleep(3.0)
+                reset_machine_data(client.tenant_id, machine_id)
+                start_cycle = 1
+            else:
+                print(f"[STREAM] Machine already has all {total_cycles} cycles ingested! Use --reset to re-stream.")
+                return
 
-        print(f"[STREAMING] Starting telemetry stream from Cycle {start_cycle} to {end_cycle} at {args.interval}s interval...")
+        print(f"[STREAMING] Telemetry active from Cycle {start_cycle} to {end_cycle} at {args.interval}s interval...")
         print("-" * 80)
 
         for obs in rows:
@@ -228,7 +217,38 @@ def main():
             time.sleep(args.interval)
 
         print("-" * 80)
-        print(f"[DONE] Telemetry streaming completed for {args.asset} (Cycles {start_cycle}..{end_cycle}).")
+        print(f"[DONE] Telemetry completed for {args.asset} (Cycles {start_cycle}..{end_cycle}).")
+
+        if not args.loop:
+            break
+        print(f"[LOOP] Restarting lifecycle in 5 seconds...")
+        time.sleep(5.0)
+        reset_machine_data(client.tenant_id, machine_id)
+        args.start_cycle = 1
+
+
+def main():
+    args = parse_args()
+    client = StreamClient(args.origin, args.email, args.password)
+    try:
+        client.login()
+        machine = client.get_machine(args.asset)
+        binding = machine.get("source_binding") or {}
+        subset = binding.get("subset", "FD001")
+        partition = binding.get("split", "train")
+        engine_id = binding.get("engine_id", 1)
+
+        print(f"[STREAM TARGET] Asset: {args.asset} (ID: {machine['id']})")
+        print(f"[STREAM TARGET] Dataset: C-MAPSS {subset} | Partition: {partition} | Engine ID: {engine_id}")
+
+        if args.reset:
+            reset_machine_data(client.tenant_id, machine["id"])
+
+        data_dir = Path(__file__).resolve().parents[1] / "data/raw"
+        source, rows = load_trajectory(data_dir, subset, partition, engine_id)
+        print(f"[DATA] Loaded {len(rows)} cycles from {partition}_{subset}.txt")
+
+        run_stream_loop(client, machine, source, rows, args)
 
     except KeyboardInterrupt:
         print("\n[ABORTED] Streamer paused by operator (Ctrl+C).")

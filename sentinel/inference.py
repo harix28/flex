@@ -55,3 +55,74 @@ class Predictor:
             return dict(base,reason='nonfinite_model_output')
         return dict(base,status='available',rul_cycles=float(max(0,result)),
                     observed_cycle=int(df.cycle.iloc[-1]),input_window_cycles=window)
+
+
+class MultiPredictor:
+    def __init__(self, predictors: dict[str, Predictor]):
+        if not predictors:
+            raise ValueError('At least one Predictor is required')
+        self.predictors = predictors
+        default_pred = predictors.get('FD001') or next(iter(predictors.values()))
+        self.meta = default_pred.meta
+        self.bundle_sha256 = default_pred.bundle_sha256
+        self.report = default_pred.report
+
+    def supports_subset(self, subset: str) -> bool:
+        return subset in self.predictors
+
+    def get_meta(self, subset: str) -> dict:
+        if subset in self.predictors:
+            return self.predictors[subset].meta
+        return self.meta
+
+    def predict(self, subset: str, records: list):
+        if subset not in self.predictors:
+            return {
+                'status': 'unavailable',
+                'reason': 'incompatible_subset',
+                'rul_cycles': None,
+                'failure_probability': None,
+                'interval': None,
+                'diagnosis_basis': 'unavailable',
+                'model_version': self.meta.get('version', 'unknown'),
+                'data_mode': 'replay',
+                'release_status': 'experiment_only',
+            }
+        return self.predictors[subset].predict(subset, records)
+
+
+KNOWN_SUBSET_CANDIDATES = {
+    'FD001': ('runs/fd001-20261027-candidate', '8c8369f735b5896756035325a4461b4a28a4b926f0c21cba7bddd2ef75dbef03'),
+    'FD002': ('runs/fd002-20261027-candidate', 'a32dcc7cd7445f65366e6cb50eb41a262ef85278b09baa2fcc40108700529231'),
+    'FD003': ('runs/fd003-20261027-candidate', 'bd258a5866a4eb110082b71072bd7cee66ee9d7e917aebd2c80b7a44ee30681e'),
+    'FD004': ('runs/fd004-20261027-candidate', '19a1ca43a256942beeb09f76dc07e77565d9910f1d6b38ac58191255f2bd7b35'),
+}
+
+
+def load_multi_predictor(primary_dir=None, primary_hash=None, project_root=None) -> MultiPredictor:
+    """Loads predictors for all available subsets (FD001..FD004)."""
+    predictors = {}
+    base_path = Path(project_root) if project_root else Path.cwd()
+
+    # 1. Primary predictor
+    if primary_dir and primary_hash:
+        p_dir = Path(primary_dir)
+        if not p_dir.is_absolute():
+            p_dir = base_path / p_dir
+        p = Predictor(p_dir, primary_hash)
+        predictors[p.meta['subset']] = p
+
+    # 2. Candidate predictors for remaining subsets
+    for subset, (rel_dir, h) in KNOWN_SUBSET_CANDIDATES.items():
+        if subset not in predictors:
+            c_dir = base_path / rel_dir
+            if c_dir.exists():
+                try:
+                    predictors[subset] = Predictor(c_dir, h)
+                except Exception:
+                    pass
+
+    if not predictors and primary_dir and primary_hash:
+        predictors['FD001'] = Predictor(primary_dir, primary_hash)
+
+    return MultiPredictor(predictors)
