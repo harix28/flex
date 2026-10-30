@@ -11,9 +11,12 @@ import {
   X,
   Activity,
   ShieldCheck,
+  Boxes,
+  ListChecks,
+  Share2,
 } from 'lucide-react';
 
-export type NavigationPage = 'overview' | 'machines' | 'machine-detail' | 'work-orders' | 'work-order-detail' | 'model-monitoring' | 'registry' | 'members';
+export type NavigationPage = 'overview' | 'machines' | 'machine-detail' | 'work-orders' | 'work-order-detail' | 'planning' | 'jobs' | 'integrations' | 'model-monitoring' | 'registry' | 'members';
 
 interface ShellProps {
   currentPage: NavigationPage;
@@ -30,6 +33,9 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
     { id: 'overview' as NavigationPage, label: 'Overview', icon: LayoutDashboard },
     { id: 'machines' as NavigationPage, label: 'Fleet Machines', icon: Cpu },
     { id: 'work-orders' as NavigationPage, label: 'Work Orders', icon: Wrench },
+    { id: 'planning' as NavigationPage, label: 'Maintenance Planning', icon: Boxes },
+    { id: 'jobs' as NavigationPage, label: 'Background Jobs', icon: ListChecks },
+    { id: 'integrations' as NavigationPage, label: 'Live Integrations', icon: Share2 },
     { id: 'model-monitoring' as NavigationPage, label: 'Model & Monitoring', icon: Activity },
     ...(canManageRegistry()
       ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }]

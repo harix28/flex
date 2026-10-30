@@ -10,6 +10,9 @@ import { WorkOrderDetailPage } from './pages/WorkOrderDetailPage';
 import { RegistryPage } from './pages/RegistryPage';
 import { MembersPage } from './pages/MembersPage';
 import { ModelMonitoringPage } from './pages/ModelMonitoringPage';
+import { PlanningPage } from './pages/PlanningPage';
+import { JobsPage } from './pages/JobsPage';
+import { IntegrationsPage } from './pages/IntegrationsPage';
 import { LoadingState } from './components/common/LoadingState';
 
 export const App: React.FC = () => {
@@ -35,6 +38,12 @@ export const App: React.FC = () => {
         setCurrentPage('machines');
       } else if (route === 'work-orders') {
         setCurrentPage('work-orders');
+      } else if (route === 'planning') {
+        setCurrentPage('planning');
+      } else if (route === 'jobs') {
+        setCurrentPage('jobs');
+      } else if (route === 'integrations') {
+        setCurrentPage('integrations');
       } else if (route === 'model-monitoring') {
         setCurrentPage('model-monitoring');
       } else if (route === 'registry') {
@@ -121,6 +130,12 @@ export const App: React.FC = () => {
           onSelectMachine={(mId) => navigateTo('machine-detail', { machineId: mId })}
         />
       )}
+
+      {currentPage === 'planning' && <PlanningPage />}
+
+      {currentPage === 'jobs' && <JobsPage />}
+
+      {currentPage === 'integrations' && <IntegrationsPage />}
 
       {currentPage === 'model-monitoring' && <ModelMonitoringPage />}
 

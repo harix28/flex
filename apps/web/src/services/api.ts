@@ -32,6 +32,12 @@ import {
   MlObservability,
   MonitoringRunsResponse,
   MonitoringRunDetail,
+  OutboxJob,
+  IntegrationsStatus,
+  WebhookSubscription,
+  WebhookDispatch,
+  ShadowMetrics,
+  CandidateEvalResult,
 } from './types';
 
 export class ApiError extends Error {
@@ -795,4 +801,103 @@ export const planningApi = {
     request<{ items: TechnicianSchedule[] }>(`/api/v1/organizations/${tenantId}/planning/shifts`),
   getWorkOrderReadiness: (tenantId: string, workOrderId: string) =>
     request<{ readiness: WorkOrderReadiness }>(`/api/v1/organizations/${tenantId}/planning/work-orders/${workOrderId}/readiness`),
+};
+
+export const jobsApi = {
+  submitFleetScore: (tenantId: string, machineIds?: string[]) =>
+    request<{ job_id: string; source_event_id: string; status: string; event_type: string; notice: string }>(
+      `/api/v1/organizations/${tenantId}/jobs/fleet-score`,
+      {
+        method: 'POST',
+        requiresCsrf: true,
+        requiresCsrfProtection: true,
+        body: JSON.stringify(machineIds ? { machine_ids: machineIds } : {}),
+      }
+    ),
+  listJobs: (tenantId: string, limit = 50) =>
+    request<{ total: number; items: OutboxJob[] }>(
+      `/api/v1/organizations/${tenantId}/jobs?limit=${limit}`
+    ),
+};
+
+export const integrationsApi = {
+  getStatus: (tenantId: string) =>
+    request<IntegrationsStatus>(`/api/v1/organizations/${tenantId}/integrations/status`),
+  exportToCmms: (tenantId: string, workOrderId: string, target: 'sap_pm' | 'maximo' = 'sap_pm') =>
+    request<{ target: string; payload: any }>(
+      `/api/v1/organizations/${tenantId}/integrations/cmms/export/${workOrderId}?target=${target}`,
+      { method: 'POST', requiresCsrf: true, requiresCsrfProtection: true }
+    ),
+  ingestEdgeTelemetry: (tenantId: string, payload: any) =>
+    request<{ status: string; asset_code: string; machine_id: string; cycle: number; batch_id: string }>(
+      `/api/v1/organizations/${tenantId}/integrations/gateway/telemetry`,
+      {
+        method: 'POST',
+        requiresCsrf: true,
+        requiresCsrfProtection: true,
+        body: JSON.stringify(payload),
+      }
+    ),
+};
+
+export const notificationsApi = {
+  listWebhooks: (tenantId: string) =>
+    request<{ items: WebhookSubscription[] }>(
+      `/api/v1/organizations/${tenantId}/notifications/webhooks`
+    ),
+  createWebhook: (
+    tenantId: string,
+    payload: { url: string; secret: string; events: string[]; label: string }
+  ) =>
+    request<WebhookSubscription>(
+      `/api/v1/organizations/${tenantId}/notifications/webhooks`,
+      {
+        method: 'POST',
+        requiresCsrf: true,
+        requiresCsrfProtection: true,
+        body: JSON.stringify(payload),
+      }
+    ),
+  deleteWebhook: (tenantId: string, webhookId: string) =>
+    request<{ status: string; id: string }>(
+      `/api/v1/organizations/${tenantId}/notifications/webhooks/${webhookId}`,
+      { method: 'DELETE', requiresCsrf: true, requiresCsrfProtection: true }
+    ),
+  getDispatchHistory: (tenantId: string, limit = 50) =>
+    request<{ items: WebhookDispatch[] }>(
+      `/api/v1/organizations/${tenantId}/notifications/webhooks/history?limit=${limit}`
+    ),
+  testDispatch: (tenantId: string, payload: { event_type: string; summary: string; priority: string; machine_id?: string }) =>
+    request<{ status: string; subscribers_notified: number }>(
+      `/api/v1/organizations/${tenantId}/notifications/dispatch`,
+      {
+        method: 'POST',
+        requiresCsrf: true,
+        requiresCsrfProtection: true,
+        body: JSON.stringify(payload),
+      }
+    ),
+};
+
+export const shadowMlopsApi = {
+  getMetrics: (tenantId: string) =>
+    request<{ status: string; metrics: ShadowMetrics }>(
+      `/api/v1/organizations/${tenantId}/ml/shadow/metrics`
+    ),
+  configureShadow: (tenantId: string, enabled: boolean, version: string) =>
+    request<{ status: string; shadow_enabled: boolean; shadow_version: string | null }>(
+      `/api/v1/organizations/${tenantId}/ml/shadow/configure?enabled=${enabled}&version=${encodeURIComponent(version)}`,
+      { method: 'POST', requiresCsrf: true, requiresCsrfProtection: true }
+    ),
+  evaluateCandidate: (
+    tenantId: string,
+    candidateVersion: string,
+    candidateTestMae: number,
+    nearFailureCandidate: number,
+    candidateHash: string
+  ) =>
+    request<CandidateEvalResult>(
+      `/api/v1/organizations/${tenantId}/ml/pipeline/evaluate-candidate?candidate_version=${encodeURIComponent(candidateVersion)}&candidate_test_mae=${candidateTestMae}&near_failure_candidate=${nearFailureCandidate}&candidate_hash=${candidateHash}`,
+      { method: 'POST', requiresCsrf: true, requiresCsrfProtection: true }
+    ),
 };

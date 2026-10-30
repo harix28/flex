@@ -504,3 +504,97 @@ export interface WorkOrderReadiness {
   assigned_technician?: TechnicianSchedule | null;
   recommended_on_duty_technicians: TechnicianSchedule[];
 }
+
+// ==========================================
+// BACKGROUND JOBS & OUTBOX QUEUE
+// ==========================================
+
+export interface OutboxJob {
+  id: string;
+  event_type: string;
+  source_event_id: string;
+  status: 'pending' | 'leased' | 'delivered' | 'dead_letter';
+  attempts: number;
+  max_attempts: number;
+  error_code: string | null;
+  created_at: string;
+  completed_at: string | null;
+  result?: {
+    total: number;
+    available: number;
+    unavailable: number;
+    machines?: Array<{
+      machine_id: string;
+      prediction_id: string;
+      status: string;
+      reason: string;
+    }>;
+  } | null;
+}
+
+// ==========================================
+// LIVE INTEGRATIONS & WEBHOOKS
+// ==========================================
+
+export interface IntegrationsStatus {
+  organization_id: string;
+  edge_gateways: {
+    protocols_supported: string[];
+    status: string;
+    enforced_bounds: string;
+  };
+  cmms_adapters: {
+    systems_supported: string[];
+    policy: string;
+    status: string;
+  };
+}
+
+export interface WebhookSubscription {
+  id: string;
+  tenant_id: string;
+  url: string;
+  events: string[];
+  label: string;
+  active: boolean;
+  created_at: string;
+}
+
+export interface WebhookDispatch {
+  id: string;
+  webhook_id: string;
+  event_type: string;
+  payload_digest: string;
+  signature: string;
+  response_status: number;
+  error_message: string | null;
+  dispatched_at: string;
+}
+
+// ==========================================
+// SHADOW MLOPS & PIPELINE GATES
+// ==========================================
+
+export interface ShadowMetrics {
+  shadow_enabled: boolean;
+  shadow_version: string | null;
+  total_comparisons: number;
+  mean_absolute_divergence_cycles: number;
+  p95_divergence_cycles: number;
+  max_divergence_cycles: number;
+  last_evaluated_at: string | null;
+}
+
+export interface CandidateEvalResult {
+  candidate_version: string;
+  active_version: string;
+  candidate_test_mae: number;
+  active_test_mae: number;
+  mae_improvement_pct: number;
+  near_failure_mae_candidate: number;
+  near_failure_mae_active: number;
+  near_failure_improvement_pct: number;
+  decision: 'PASS_GATE' | 'FAIL_GATE';
+  reasons: string[];
+  summary: string;
+}

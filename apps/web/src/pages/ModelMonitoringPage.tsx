@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { mlopsApi } from '../services/api';
+import { mlopsApi, shadowMlopsApi } from '../services/api';
+import { ShadowMetrics } from '../services/types';
 import { ModelInfo, MlObservability, MonitoringRun, MonitoringRunDetail } from '../services/types';
 import { LoadingState } from '../components/common/LoadingState';
 import { ErrorState } from '../components/common/ErrorState';
@@ -29,6 +30,7 @@ export const ModelMonitoringPage: React.FC = () => {
   const [isEvalRunning, setIsEvalRunning] = useState(false);
   const [evalSubset, setEvalSubset] = useState<'FD001' | 'FD002' | 'FD003' | 'FD004'>('FD001');
   const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [shadowMetrics, setShadowMetrics] = useState<ShadowMetrics | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!activeTenant) return;
@@ -44,6 +46,12 @@ export const ModelMonitoringPage: React.FC = () => {
       setModelInfo(infoRes);
       setObservability(obsRes);
       setMonitoringRuns(runsRes.runs || []);
+      try {
+        const shadowRes = await shadowMlopsApi.getMetrics(activeTenant.id);
+        setShadowMetrics(shadowRes.metrics);
+      } catch {
+        // Shadow serving optional
+      }
     } catch (err: any) {
       setError({
         message: err.message || 'Failed to load model registry and monitoring data',
@@ -800,6 +808,81 @@ export const ModelMonitoringPage: React.FC = () => {
             No offline ground-truth evaluation runs recorded yet. Use <code style={{ fontFamily: 'var(--font-mono)' }}>python -m sentinel.mlops.cli run-evaluation</code> with verified NASA test labels.
           </div>
         )}
+      </div>
+
+      
+      {/* Card 6: Shadow Model Divergence Tracking */}
+      <div
+        style={{
+          backgroundColor: 'var(--bg-surface)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '1.25rem',
+          marginBottom: '1.5rem',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Layers size={18} color="var(--primary)" />
+            <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+              Shadow Model Serving & Divergence Tracking
+            </h2>
+          </div>
+          <span
+            style={{
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              padding: '0.2rem 0.55rem',
+              borderRadius: 'var(--radius-sm)',
+              backgroundColor: shadowMetrics?.shadow_enabled ? 'rgba(34, 197, 94, 0.15)' : 'rgba(148, 163, 184, 0.15)',
+              color: shadowMetrics?.shadow_enabled ? 'var(--success)' : 'var(--text-muted)',
+            }}
+          >
+            {shadowMetrics?.shadow_enabled ? `SHADOW ACTIVE (${shadowMetrics.shadow_version})` : 'SHADOW DISABLED'}
+          </span>
+        </div>
+
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.8125rem', lineHeight: 1.4, margin: '0 0 1rem' }}>
+          Shadow model evaluates real incoming observation cycles asynchronously in parallel. Predictions are compared against the active baseline to detect behavioral divergence before production release.
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', textAlign: 'center' }}>
+          <div style={{ backgroundColor: 'var(--bg-canvas)', padding: '0.75rem 0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+              {shadowMetrics?.total_comparisons ?? 0}
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '0.2rem' }}>
+              Parallel Inferences
+            </div>
+          </div>
+
+          <div style={{ backgroundColor: 'var(--bg-canvas)', padding: '0.75rem 0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary)' }}>
+              {shadowMetrics?.mean_absolute_divergence_cycles?.toFixed(2) ?? '0.00'}
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '0.2rem' }}>
+              Mean Divergence (Cycles)
+            </div>
+          </div>
+
+          <div style={{ backgroundColor: 'var(--bg-canvas)', padding: '0.75rem 0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+              {shadowMetrics?.p95_divergence_cycles?.toFixed(2) ?? '0.00'}
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '0.2rem' }}>
+              P95 Divergence (Cycles)
+            </div>
+          </div>
+
+          <div style={{ backgroundColor: 'var(--bg-canvas)', padding: '0.75rem 0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+              {shadowMetrics?.max_divergence_cycles?.toFixed(2) ?? '0.00'}
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '0.2rem' }}>
+              Max Divergence (Cycles)
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Monitoring Runs History Table */}
