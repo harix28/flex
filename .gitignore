@@ -40,3 +40,5 @@ ml_package/
 
 # Generated sanitized AI context copies; canonical source remains in its own folders.
 docs/AI_HANDOFF/source_snapshot/
+
+.vercel/

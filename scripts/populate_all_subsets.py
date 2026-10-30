@@ -16,9 +16,13 @@ from sentinel.predictions.service import compute_and_persist
 
 
 def main():
-    env_file = ROOT / '.runtime/postgres.env'
-    env_vars = read_env(env_file)
-    db = Database(env_vars['DATABASE_URL'])
+    import os
+    db_url = os.environ.get('DATABASE_URL')
+    if not db_url:
+        env_file = ROOT / '.runtime/postgres.env'
+        env_vars = read_env(env_file)
+        db_url = env_vars['DATABASE_URL']
+    db = Database(db_url)
     data_dir = ROOT / 'data/raw'
     tenant_slug = 'meridian-a'
 

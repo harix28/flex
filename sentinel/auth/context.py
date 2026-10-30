@@ -62,5 +62,6 @@ class AuthContext:
             raise HTTPException(404,'not_found')
         if not permits(member['roles'],permission):
             raise HTTPException(403,'forbidden')
+        if s.bind and s.bind.dialect.name == 'postgresql':
+            s.execute(text("SELECT set_config('app.current_tenant_id', :tenant, true)"), dict(tenant=str(tenant_id)))
         return member
-
