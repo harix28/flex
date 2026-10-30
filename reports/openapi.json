@@ -1673,6 +1673,75 @@
         }
       }
     },
+    "/api/v1/organizations/{tenant_id}/machines/{machine_id}/lifetime-classification": {
+      "get": {
+        "tags": [
+          "Lifetime classification"
+        ],
+        "summary": "Classify",
+        "operationId": "classify_api_v1_organizations__tenant_id__machines__machine_id__lifetime_classification_get",
+        "parameters": [
+          {
+            "name": "tenant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Tenant Id"
+            }
+          },
+          {
+            "name": "machine_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Machine Id"
+            }
+          },
+          {
+            "name": "cutoff_cycle",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 2147483647,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cutoff Cycle"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/organizations/{tenant_id}/machines/{machine_id}/predictions": {
       "post": {
         "tags": [
