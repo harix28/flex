@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Activity, Lock, Mail, AlertCircle, Loader2, ShieldCheck, Database } from 'lucide-react';
+import { Activity, Lock, Mail, AlertCircle, Loader2, ShieldCheck } from 'lucide-react';
 
 interface LoginPageProps {
   onLoginSuccess: () => void;
@@ -161,24 +161,55 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           </button>
         </form>
 
-        {/* Local Bootstrap Guidance */}
+        {/* Demo Accounts Quick-Select */}
         <div
           style={{
-            marginTop: '1.5rem',
+            marginTop: '1.25rem',
             paddingTop: '1rem',
             borderTop: '1px solid var(--border-subtle)',
-            fontSize: '0.75rem',
-            color: 'var(--text-muted)',
-            textAlign: 'center',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', marginBottom: '0.25rem' }}>
-            <Database size={13} />
-            <strong>Local Operator Identity Note</strong>
+          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem', textAlign: 'center' }}>
+            Quick Demo Login (Click to Fill):
           </div>
-          <p>
-            Authenticate using provisions created via <code className="mono">sentinel.auth bootstrap</code> or the test suite. No default passwords are hardcoded in client source.
-          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.4rem' }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setEmail('admin@meridian.example.com');
+                setPassword('Password12345!');
+              }}
+              style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', justifyContent: 'space-between', display: 'flex' }}
+            >
+              <span>👔 <strong>General Manager</strong> (Admin)</span>
+              <span className="mono" style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>admin@meridian.example.com</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setEmail('manager@meridian.example.com');
+                setPassword('Password12345!');
+              }}
+              style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', justifyContent: 'space-between', display: 'flex' }}
+            >
+              <span>⚙️ <strong>Maintenance Engineer</strong> (Lead)</span>
+              <span className="mono" style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>manager@meridian.example.com</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setEmail('tech@meridian.example.com');
+                setPassword('Password12345!');
+              }}
+              style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', justifyContent: 'space-between', display: 'flex' }}
+            >
+              <span>🔧 <strong>Maintenance Technician</strong> (A&P)</span>
+              <span className="mono" style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>tech@meridian.example.com</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
