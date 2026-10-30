@@ -19,15 +19,25 @@ def main():
                 os.environ[key] = 'postgresql+psycopg://' + val[len('postgresql://'):]
 
         if 'MIGRATION_DATABASE_URL' in os.environ and 'SENTINEL_RUNTIME_PASSWORD' in os.environ:
+            owner = validate_database_url(os.environ['MIGRATION_DATABASE_URL'])
+            password = os.environ['SENTINEL_RUNTIME_PASSWORD']
             try:
-                owner = validate_database_url(os.environ['MIGRATION_DATABASE_URL'])
-                password = os.environ['SENTINEL_RUNTIME_PASSWORD']
                 migrate_and_grant(owner.render_as_string(hide_password=False), password)
                 os.environ['DATABASE_URL'] = owner.set(username='sentinel_app', password=password).render_as_string(hide_password=False)
+            except Exception as e:
+                print(f"Migration/grant warning: {e}. Falling back to direct database migration.", file=sys.stderr)
+                try:
+                    from alembic import command
+                    from alembic.config import Config
+                    cfg = Config(str(Path(__file__).resolve().parents[1] / 'alembic.ini'))
+                    cfg.set_main_option('sqlalchemy.url', owner.render_as_string(hide_password=False))
+                    command.upgrade(cfg, 'head')
+                except Exception as ex:
+                    print(f"Direct migration note: {ex}", file=sys.stderr)
+                os.environ['DATABASE_URL'] = owner.render_as_string(hide_password=False)
+            finally:
                 os.environ.pop('MIGRATION_DATABASE_URL', None)
                 os.environ.pop('SENTINEL_RUNTIME_PASSWORD', None)
-            except Exception as e:
-                print(f"Migration/grant warning: {e}", file=sys.stderr)
         elif 'DATABASE_URL' in os.environ:
             try:
                 from alembic import command
@@ -59,7 +69,9 @@ def main():
 
         from .api import create_app
         app = create_app(settings=load_settings().require_model())
-        app.mount('/', StaticFiles(directory='/app/web', html=True), name='web')
+        web_dir = Path('/app/web')
+        if web_dir.is_dir():
+            app.mount('/', StaticFiles(directory=str(web_dir), html=True), name='web')
     except Exception as e:
         import traceback
         traceback.print_exc()
