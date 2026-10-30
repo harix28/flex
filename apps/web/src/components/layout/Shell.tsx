@@ -211,20 +211,20 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
                   setMobileMenuOpen(false);
                 }}
                 style={{
+                  position: 'relative',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.75rem',
-                  padding: '0.625rem 0.75rem',
+                  padding: '0.625rem 0.85rem',
                   fontSize: '0.875rem',
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? '#ffffff' : '#94a3b8',
                   backgroundColor: isActive ? '#1e293b' : 'transparent',
-                  border: 'none',
-                  borderLeft: isActive ? '3px solid #2563eb' : '3px solid transparent',
-                  borderRadius: '4px',
+                  border: isActive ? '1px solid #334155' : '1px solid transparent',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   textAlign: 'left',
-                  transition: 'background-color 150ms ease, color 150ms ease',
+                  transition: 'all 150ms ease',
                   width: '100%',
                 }}
                 onMouseEnter={(e) => {
@@ -278,20 +278,20 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
                       setMobileMenuOpen(false);
                     }}
                     style={{
+                      position: 'relative',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '0.75rem',
-                      padding: '0.625rem 0.75rem',
+                      padding: '0.625rem 0.85rem',
                       fontSize: '0.875rem',
                       fontWeight: isActive ? 600 : 500,
                       color: isActive ? '#ffffff' : '#94a3b8',
                       backgroundColor: isActive ? '#1e293b' : 'transparent',
-                      border: 'none',
-                      borderLeft: isActive ? '3px solid #2563eb' : '3px solid transparent',
-                      borderRadius: '4px',
+                      border: isActive ? '1px solid #334155' : '1px solid transparent',
+                      borderRadius: '6px',
                       cursor: 'pointer',
                       textAlign: 'left',
-                      transition: 'background-color 150ms ease, color 150ms ease',
+                      transition: 'all 150ms ease',
                       width: '100%',
                     }}
                     onMouseEnter={(e) => {
