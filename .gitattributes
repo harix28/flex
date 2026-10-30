@@ -3,5 +3,4 @@
 Dockerfile text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
-runs/**/*.json text eol=lf
-runs/**/*.npz binary
+runs/**/* binary

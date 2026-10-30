@@ -1,4 +1,5 @@
 """Hash-pinned, read-only C-MAPSS lifetime-stage inference (not fault diagnosis)."""
+import hashlib
 import json
 from pathlib import Path
 from typing import Annotated
@@ -21,9 +22,12 @@ LABELS = ['early_lifetime', 'middle_lifetime', 'late_lifetime']
 class LifetimeClassifier:
     def __init__(self, directory):
         directory = Path(directory)
-        if sha256(directory / 'forest.json') != TRUSTED_MANIFEST:
+        raw_json = (directory / 'forest.json').read_bytes()
+        json_sha = hashlib.sha256(raw_json).hexdigest()
+        crlf_sha = hashlib.sha256(raw_json.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')).hexdigest()
+        if json_sha != TRUSTED_MANIFEST and crlf_sha != TRUSTED_MANIFEST:
             raise ValueError('Classifier manifest rejected')
-        meta = json.loads((directory / 'forest.json').read_text())
+        meta = json.loads(raw_json.decode('utf-8'))
         if (meta['features'] != ['cycle'] + VALUES or meta['classes'] != [0, 1, 2]
                 or sha256(directory / 'forest.npz') != meta['forest_sha256']):
             raise ValueError('Classifier feature/artifact contract rejected')

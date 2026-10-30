@@ -79,8 +79,10 @@ def create_app(predictor=None, api_key=None, *, settings=None):
     if auth_settings.classifier_dir is not None:
         try:
             classifier = LifetimeClassifier(auth_settings.classifier_dir)
-        except Exception:
-            raise ConfigurationError('Classifier rejected: check trusted artifact hashes and file access') from None
+        except Exception as e:
+            import traceback, sys
+            traceback.print_exc(file=sys.stderr)
+            raise ConfigurationError(f'Classifier rejected: {e}') from None
     if auth_settings.auth_origins:
         app.add_middleware(CORSMiddleware, allow_origins=list(auth_settings.auth_origins),
             allow_credentials=True, allow_methods=['GET','POST','PATCH','DELETE'],

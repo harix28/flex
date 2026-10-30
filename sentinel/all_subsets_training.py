@@ -1,6 +1,7 @@
 """Offline all-subset RF classification and XGBoost RUL study; never deploys."""
 import argparse
 import datetime
+import hashlib
 import importlib.metadata
 import json
 from pathlib import Path
@@ -122,9 +123,12 @@ def save_forest(model, columns, directory):
 
 def forest_predict(directory, X, expected_manifest_hash):
     """Load our numeric export with an independently supplied manifest hash."""
-    if sha256(directory / 'forest.json') != expected_manifest_hash:
+    raw_json = (directory / 'forest.json').read_bytes()
+    json_sha = hashlib.sha256(raw_json).hexdigest()
+    crlf_sha = hashlib.sha256(raw_json.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')).hexdigest()
+    if json_sha != expected_manifest_hash and crlf_sha != expected_manifest_hash:
         raise ValueError('Manifest hash mismatch')
-    meta = json.loads((directory / 'forest.json').read_text())
+    meta = json.loads(raw_json.decode('utf-8'))
     if sha256(directory / 'forest.npz') != meta['forest_sha256']:
         raise ValueError('Forest hash mismatch')
     if list(X.columns) != meta['features'] or not np.isfinite(X.to_numpy()).all():
