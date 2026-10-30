@@ -31,10 +31,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<{ message: string; requestId?: string } | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(false);
 
-  const fetchPriorities = useCallback(async () => {
+  const fetchPriorities = useCallback(async (silent = false) => {
     if (!activeTenant) return;
-    setIsLoading(true);
+    if (!silent) setIsLoading(true);
     setError(null);
 
     try {
@@ -58,6 +59,18 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
     fetchPriorities();
   }, [fetchPriorities]);
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (autoRefresh) {
+      interval = setInterval(() => {
+        fetchPriorities(true);
+      }, 3000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [autoRefresh, fetchPriorities]);
+
   const summary = data?.summary || {
     urgent: 0,
     high: 0,
@@ -79,16 +92,45 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             Deterministic priority ranking based on causal trailing RUL predictions ({data?.policy_version || 'v1-experimental'}).
           </p>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={fetchPriorities}
-          disabled={isLoading}
-          style={{ fontSize: '0.8125rem' }}
-        >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-          <span>Refresh Fleet Status</span>
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <button
+            type="button"
+            className={`btn ${autoRefresh ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            style={{
+              fontSize: '0.8125rem',
+              borderColor: autoRefresh ? '#16a34a' : undefined,
+              backgroundColor: autoRefresh ? 'rgba(34, 197, 94, 0.12)' : undefined,
+              color: autoRefresh ? '#15803d' : undefined,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}
+          >
+            <span
+              style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                backgroundColor: autoRefresh ? '#16a34a' : 'var(--text-muted)',
+                display: 'inline-block',
+                boxShadow: autoRefresh ? '0 0 6px #22c55e' : 'none',
+              }}
+            />
+            <span>{autoRefresh ? 'Auto-Refresh: ON' : 'Auto-Refresh: OFF'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => fetchPriorities(false)}
+            disabled={isLoading}
+            style={{ fontSize: '0.8125rem' }}
+          >
+            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            <span>Refresh Fleet Status</span>
+          </button>
+        </div>
       </div>
 
       {/* Fleet Priority Metric Summary Cards */}

@@ -51,14 +51,18 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<{ message: string; requestId?: string } | null>(null);
 
+  // Live telemetry streaming mode
+  const [isLiveStreaming, setIsLiveStreaming] = useState(false);
+  const [lastStreamUpdate, setLastStreamUpdate] = useState<Date | null>(null);
+
   // Modals
   const [isRunPredictionOpen, setIsRunPredictionOpen] = useState(false);
   const [isCreateDraftOpen, setIsCreateDraftOpen] = useState(false);
   const [draftPredictionId, setDraftPredictionId] = useState<string | undefined>(undefined);
 
-  const fetchMachineData = useCallback(async () => {
+  const fetchMachineData = useCallback(async (silent = false) => {
     if (!activeTenant) return;
-    setIsLoading(true);
+    if (!silent) setIsLoading(true);
     setError(null);
 
     try {
@@ -121,6 +125,18 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
   useEffect(() => {
     fetchMachineData();
   }, [fetchMachineData]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isLiveStreaming) {
+      interval = setInterval(() => {
+        fetchMachineData(true).then(() => setLastStreamUpdate(new Date()));
+      }, 2000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLiveStreaming, fetchMachineData]);
 
   if (isLoading && !machine) {
     return <LoadingState message="Loading machine telemetry and historical predictions..." />;
@@ -186,11 +202,38 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          {/* Live Streaming Toggle */}
+          <button
+            type="button"
+            className={`btn ${isLiveStreaming ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setIsLiveStreaming(!isLiveStreaming)}
+            style={{
+              borderColor: isLiveStreaming ? '#16a34a' : undefined,
+              backgroundColor: isLiveStreaming ? 'rgba(34, 197, 94, 0.12)' : undefined,
+              color: isLiveStreaming ? '#15803d' : undefined,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+          >
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: isLiveStreaming ? '#16a34a' : 'var(--text-muted)',
+                display: 'inline-block',
+                boxShadow: isLiveStreaming ? '0 0 8px #22c55e' : 'none',
+              }}
+            />
+            <span>{isLiveStreaming ? 'Live Stream: ON' : 'Live Stream: OFF'}</span>
+          </button>
+
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={fetchMachineData}
+            onClick={() => fetchMachineData(false)}
             disabled={isLoading}
           >
             <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
@@ -305,6 +348,45 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
               {dataQuality.gaps.map((g) => `[Cycle ${g.start_cycle}–${g.end_cycle}]`).join(', ')}. Predictions requiring these missing cycles will remain unavailable.
             </div>
           )}
+        </div>
+      )}
+
+      {/* Live Stream Telemetry Banner */}
+      {isLiveStreaming && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0.75rem 1.25rem',
+            backgroundColor: 'rgba(34, 197, 94, 0.08)',
+            border: '1px solid rgba(34, 197, 94, 0.3)',
+            borderRadius: 'var(--radius-md)',
+            fontSize: '0.8125rem',
+            color: '#15803d',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#16a34a',
+                display: 'inline-block',
+                boxShadow: '0 0 6px #16a34a',
+              }}
+            />
+            <span>
+              <strong>Live Telemetry Stream Active:</strong> Polling new cycles &amp; real-time RUL prediction every 2s
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+            <span>Current Cycle: <strong className="mono">#{dataQuality?.latest_cycle ?? 0}</strong></span>
+            {lastStreamUpdate && <span>Updated: {lastStreamUpdate.toLocaleTimeString()}</span>}
+          </div>
         </div>
       )}
 
