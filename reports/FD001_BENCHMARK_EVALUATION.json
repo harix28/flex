@@ -1,0 +1,11 @@
+{
+  "rmse": 21.6085,
+  "mae": 16.7939,
+  "mape_percent": 24.48,
+  "nasa_score": 1831.69,
+  "mean_nasa_score": 18.3169,
+  "sample_size": 100,
+  "early_predictions_count": 34,
+  "late_predictions_count": 66,
+  "safety_margin_ratio": 0.34
+}
