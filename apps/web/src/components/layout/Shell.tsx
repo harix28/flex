@@ -11,10 +11,9 @@ import {
   X,
   Activity,
   ShieldCheck,
-  UploadCloud,
 } from 'lucide-react';
 
-export type NavigationPage = 'overview' | 'machines' | 'machine-detail' | 'work-orders' | 'work-order-detail' | 'model-monitoring' | 'registry' | 'members' | 'admin-pipeline';
+export type NavigationPage = 'overview' | 'machines' | 'machine-detail' | 'work-orders' | 'work-order-detail' | 'model-monitoring' | 'registry' | 'members';
 
 interface ShellProps {
   currentPage: NavigationPage;
@@ -36,10 +35,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
       ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }]
       : []),
     ...(canManageMembers()
-      ? [
-          { id: 'admin-pipeline' as NavigationPage, label: 'Admin ML Pipeline', icon: UploadCloud },
-          { id: 'members' as NavigationPage, label: 'Organization Members', icon: Users },
-        ]
+      ? [{ id: 'members' as NavigationPage, label: 'Organization Members', icon: Users }]
       : []),
   ];
 
