@@ -94,7 +94,10 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(endpoint, {
+  const apiBase = ((import.meta as any).env?.VITE_BACKEND_URL || '').replace(/\/$/, '');
+  const url = endpoint.startsWith('http') ? endpoint : `${apiBase}${endpoint}`;
+
+  const response = await fetch(url, {
     ...rest,
     headers,
     credentials: 'include', // Host-only HttpOnly session cookie
