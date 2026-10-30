@@ -19,7 +19,7 @@ import {
   Info,
   ChevronDown,
   ChevronUp,
-  Plane,
+  Cpu,
 } from 'lucide-react';
 
 interface OverviewPageProps {
@@ -91,21 +91,21 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
   const getLaymanExplanation = (item: MaintenancePriorityItem) => {
     if (item.priority_band === 'urgent') {
       const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '<15';
-      return `Critical wear: only about ${left} flights left. Needs immediate inspection before flying again.`;
+      return `Critical wear: only about ${left} operating cycles left. Needs immediate inspection before operating again.`;
     }
     if (item.priority_band === 'high') {
       const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '15-35';
-      return `Noticeable wear: about ${left} flights left. Schedule a maintenance check in the next few days.`;
+      return `Noticeable wear: about ${left} cycles left. Schedule a maintenance check in the next few days.`;
     }
     if (item.priority_band === 'medium') {
       const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '35-75';
-      return `Normal wear: about ${left} flights left. Plan regular checkup during upcoming standard maintenance.`;
+      return `Normal wear: about ${left} cycles left. Plan regular checkup during upcoming standard maintenance.`;
     }
     if (item.priority_band === 'low') {
       const left = item.rul_cycles !== null ? Math.round(item.rul_cycles) : '>75';
-      return `Engine is healthy: plenty of flight life left (${left} flights). Working smoothly, no action needed.`;
+      return `Engine is healthy: plenty of machine operating life left (${left} cycles). Running smoothly, no action needed.`;
     }
-    return item.explanation || 'Waiting for more flight sensor recordings to estimate remaining life.';
+    return item.explanation || 'Waiting for more machine sensor recordings to estimate remaining life.';
   };
 
   return (
@@ -114,7 +114,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Plane size={24} style={{ color: 'var(--primary)' }} />
+            <Cpu size={24} style={{ color: 'var(--primary)' }} />
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Engine Health & Maintenance Dashboard</h1>
           </div>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.35rem' }}>
@@ -191,17 +191,17 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
             <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
               <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>1. What is a "Cycle"?</strong>
-              In aviation and plant machinery, <strong>1 cycle = 1 full flight</strong> (engine startup, takeoff, flight, and landing).
+              In engine and machine operations, <strong>1 cycle = 1 full operating run</strong> (engine startup, operation under load, and shutdown).
             </div>
             <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>2. What are "Flights Left"?</strong>
-              Our smart sensor checks calculate how many more flights this engine can safely complete before requiring workshop service.
+              <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>2. What are "Cycles Left"?</strong>
+              Our smart sensor checks calculate how many more operating cycles this engine or machine can safely run before requiring service.
             </div>
             <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
               <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>3. How Urgency is Decided:</strong>
-              <span style={{ color: '#ef4444' }}>Red (&le;15 flights)</span> = Service now. <br />
-              <span style={{ color: '#f59e0b' }}>Yellow (15-35 flights)</span> = Plan checkup soon. <br />
-              <span style={{ color: '#10b981' }}>Green (&gt;75 flights)</span> = All good, safe to fly.
+              <span style={{ color: '#ef4444' }}>Red (&le;15 cycles)</span> = Service now. <br />
+              <span style={{ color: '#f59e0b' }}>Yellow (15-35 cycles)</span> = Plan checkup soon. <br />
+              <span style={{ color: '#10b981' }}>Green (&gt;75 cycles)</span> = Healthy, safe to operate.
             </div>
             <div style={{ padding: '0.75rem', backgroundColor: 'var(--bg-surface)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
               <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.25rem' }}>4. Safety Always Comes First:</strong>
@@ -231,7 +231,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             {summary.urgent}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            &le; 15 flights remaining &bull; Inspect immediately
+            &le; 15 cycles remaining &bull; Inspect immediately
           </div>
         </div>
 
@@ -253,7 +253,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             {summary.high}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            15 to 35 flights remaining &bull; Plan repair this week
+            15 to 35 cycles remaining &bull; Plan repair this week
           </div>
         </div>
 
@@ -275,7 +275,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             {summary.medium}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            35 to 75 flights remaining &bull; Standard routine wear
+            35 to 75 cycles remaining &bull; Standard routine wear
           </div>
         </div>
 
@@ -297,7 +297,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             {summary.low}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            &gt; 75 flights remaining &bull; Running smoothly
+            &gt; 75 cycles remaining &bull; Running smoothly
           </div>
         </div>
       </div>
@@ -321,7 +321,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'var(--outdated-text)' }}>
               <AlertCircle size={16} />
               <span>
-                <strong>{summary.outdated} Engine{summary.outdated === 1 ? '' : 's'} Need Update:</strong> Newer flight sensor recordings have arrived. Click 'Refresh Status' to recalculate.
+                <strong>{summary.outdated} Engine{summary.outdated === 1 ? '' : 's'} Need Update:</strong> Newer machine sensor recordings have arrived. Click 'Refresh Status' to recalculate.
               </span>
             </div>
           )}
@@ -330,7 +330,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'var(--unknown-text)' }}>
               <HelpCircle size={16} />
               <span>
-                <strong>{summary.unknown} Waiting for Sensor Data:</strong> Needs more flight recordings before remaining flights can be calculated.
+                <strong>{summary.unknown} Waiting for Sensor Data:</strong> Needs more sensor recordings before remaining cycles can be calculated.
               </span>
             </div>
           )}
@@ -437,9 +437,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
               <tr>
                 <th>Engine Code &amp; Name</th>
                 <th>Engine Type</th>
-                <th>Estimated Flights Left</th>
+                <th>Estimated Cycles Left</th>
                 <th>Urgency Level</th>
-                <th>Last Flight Checked</th>
+                <th>Last Cycle Checked</th>
                 <th>Data Freshness</th>
                 <th>Why this status? (Simple Reason)</th>
                 <th>Action</th>
@@ -484,7 +484,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                             {item.rul_cycles.toFixed(1)}
                           </span>
                           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                            flights left
+                            cycles left
                           </span>
                         </div>
                       ) : (
@@ -501,7 +501,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onSelectMachine, onN
                     <td>
                       {item.prediction_cutoff_cycle ? (
                         <span className="mono" style={{ fontSize: '0.8125rem' }}>
-                          Flight {item.prediction_cutoff_cycle}
+                          Cycle {item.prediction_cutoff_cycle}
                         </span>
                       ) : (
                         <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>—</span>
