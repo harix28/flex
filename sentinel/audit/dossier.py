@@ -3,11 +3,6 @@ Generates vector-crisp, cryptographic PDF investigation packets using matplotlib
 """
 import io
 from datetime import datetime, timezone
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import numpy as np
 
 
 def generate_audit_dossier_pdf(
@@ -21,6 +16,16 @@ def generate_audit_dossier_pdf(
     related_work_orders: list[dict],
 ) -> bytes:
     """Generates a complete, tamper-evident PDF investigation dossier."""
+    try:
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        from matplotlib.backends.backend_pdf import PdfPages
+    except ModuleNotFoundError as exc:
+        if exc.name and exc.name.startswith("matplotlib"):
+            raise RuntimeError("matplotlib is required to generate audit dossier PDFs") from exc
+        raise
+
     buf = io.BytesIO()
 
     with PdfPages(buf) as pdf:
@@ -219,4 +224,3 @@ def generate_audit_dossier_pdf(
 
     buf.seek(0)
     return buf.getvalue()
-
