@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "apps/web"
+  ],
   "scripts": {
+    "build": "npm --prefix apps/web run build",
     "dev": "node scripts/dev-both.js",
     "dev:both": "node scripts/dev-both.js",
     "dev:frontend": "npm --prefix apps/web run dev",
