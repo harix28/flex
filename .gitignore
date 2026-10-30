@@ -43,6 +43,7 @@ resources/interactive/Meridian_Sentinel_Interactive.html
 
 # User-requested export archives and standalone packages
 *.zip
+team_packages/
 ml_package/
 
 # Generated sanitized AI context copies; canonical source remains in its own folders.
