@@ -4885,6 +4885,106 @@
         }
       }
     },
+    "/api/v1/auth/sso/config": {
+      "get": {
+        "tags": [
+          "Enterprise SSO"
+        ],
+        "summary": "Get Sso Config",
+        "description": "Returns enterprise identity configuration and supported SSO protocols.",
+        "operationId": "get_sso_config_api_v1_auth_sso_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/sso/authorize": {
+      "post": {
+        "tags": [
+          "Enterprise SSO"
+        ],
+        "summary": "Initiate Sso Login",
+        "description": "Generates PKCE code pair and OIDC redirect URL for enterprise sign-in.",
+        "operationId": "initiate_sso_login_api_v1_auth_sso_authorize_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SSOAuthorizeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/sso/callback": {
+      "post": {
+        "tags": [
+          "Enterprise SSO"
+        ],
+        "summary": "Handle Sso Callback",
+        "description": "Processes verified OIDC/SAML claims, provisions or syncs user membership,\nand establishes an authenticated server-side session.",
+        "operationId": "handle_sso_callback_api_v1_auth_sso_callback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SSOCallbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -5674,6 +5774,82 @@
           "observations"
         ],
         "title": "PredictionRequest"
+      },
+      "SSOAuthorizeRequest": {
+        "properties": {
+          "tenant_slug": {
+            "type": "string",
+            "title": "Tenant Slug",
+            "description": "Organization slug requesting SSO"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "title": "Redirect Uri",
+            "default": "http://localhost:5173/auth/callback"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider",
+            "description": "Identity provider (okta, azure_ad, keycloak)",
+            "default": "okta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tenant_slug"
+        ],
+        "title": "SSOAuthorizeRequest"
+      },
+      "SSOCallbackRequest": {
+        "properties": {
+          "tenant_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Tenant Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "code_verifier": {
+            "type": "string",
+            "title": "Code Verifier"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "Verified email claim from OIDC ID token"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name",
+            "default": "Enterprise User"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Groups",
+            "description": "Enterprise security groups/roles claim",
+            "default": [
+              "technician"
+            ]
+          },
+          "issuer": {
+            "type": "string",
+            "title": "Issuer",
+            "default": "https://login.microsoftonline.com/tenant-id/v2.0"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tenant_id",
+          "code",
+          "code_verifier",
+          "email"
+        ],
+        "title": "SSOCallbackRequest"
       },
       "SensorCreate": {
         "properties": {
