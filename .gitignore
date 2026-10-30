@@ -2,7 +2,14 @@
 __pycache__/
 .pytest_cache/
 data/raw/
-runs/
+runs/*
+!runs/fd001-v1/
+!runs/all-subsets-20261030-v1/
+runs/all-subsets-20261030-v1/*
+!runs/all-subsets-20261030-v1/COMBINED/
+runs/all-subsets-20261030-v1/COMBINED/*
+!runs/all-subsets-20261030-v1/COMBINED/forest.json
+!runs/all-subsets-20261030-v1/COMBINED/forest.npz
 .env
 .env.*
 !.env.example

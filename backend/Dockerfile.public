@@ -23,7 +23,7 @@ ENV SENTINEL_MODEL_DIR=/app/models/fd001-v1 \
     SENTINEL_HOST=0.0.0.0 SENTINEL_CONTAINER_MODE=true \
     SENTINEL_AUTH_ENABLED=true SENTINEL_AUTH_LOCALHOST=false \
     PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 OMP_NUM_THREADS=1
-RUN useradd -u 10001 -m sentinel
+RUN useradd -u 10001 -m sentinel && chown -R sentinel:sentinel /app
 USER sentinel
 EXPOSE 10000
 CMD ["python", "-m", "sentinel.public_serve"]
