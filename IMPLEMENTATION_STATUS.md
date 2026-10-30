@@ -1,3 +1,18 @@
+## Enterprise Role Isolation & Plain Layman English UI — 2026-10-30
+
+1. **Role Allocation Matrix & Boundary Guarding**:
+   - **General Manager (`admin`)**: Executive overview, organization governance (`/members`), system integration keys/gateways (`/integrations`), and fleet registry definition (`/registry`).
+   - **Maintenance Engineer (`plant_manager`)**: Maintenance planning & inventory (`/planning`), work order approval gate (`/work-orders`), technician assignment, automated fleet checkup jobs (`/jobs`), and model observability / MLOps (`/model-monitoring`).
+   - **Maintenance Technician (`technician`)**: Task execution board (`/work-orders` - start, report issue, complete, log notes), assigned engine sensor telemetry, and warehouse parts lookup. Barred from approving work orders, managing integrations, or modifying membership.
+   - **Non-Interruption Controls**: Navigation menu partitioning (`Shell.tsx`), route boundary guards (`RoleBoundaryGuard` in `App.tsx`), and draft approval gate alerts in `WorkOrderDetailPage.tsx`.
+
+2. **Plain Layman English Redesign**:
+   - Replaced mathematical jargon, technical abbreviations, and complex terms with clear, intuitive everyday English across all pages.
+   - Added interactive **Beginner's Guide to this Dashboard** explaining flight cycles, estimated flights left, urgency colors, and human safety approval guarantees.
+   - Simplified table columns, filter buttons with counts, and status badges (`Simulated Test Engine`, `Real Factory Engine`, `Needs Update`, `Up to Date`).
+
+---
+
 ## Full Enterprise Architecture Delivery & Demonstration — 2026-10-30
 
 All 9 enterprise roadmap modules are implemented, integrated into the running FastAPI backend and React frontend, and verified end-to-end via `scripts/demo_full_architecture.py` and unit/integration test suites:
