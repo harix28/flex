@@ -4030,6 +4030,239 @@
         }
       }
     },
+    "/api/v1/organizations/{organization_id}/ml/pipeline/evaluate-candidate": {
+      "post": {
+        "tags": [
+          "mlops"
+        ],
+        "summary": "Evaluate Candidate",
+        "description": "Runs the automated candidate evaluation pipeline and checks promotion gates.",
+        "operationId": "evaluate_candidate_api_v1_organizations__organization_id__ml_pipeline_evaluate_candidate_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "candidate_version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "fd001-v2-candidate",
+              "title": "Candidate Version"
+            }
+          },
+          {
+            "name": "candidate_test_mae",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "default": 15.8,
+              "title": "Candidate Test Mae"
+            }
+          },
+          {
+            "name": "near_failure_candidate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "default": 4.2,
+              "title": "Near Failure Candidate"
+            }
+          },
+          {
+            "name": "candidate_hash",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "title": "Candidate Hash"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/ml/pipeline/candidates": {
+      "get": {
+        "tags": [
+          "mlops"
+        ],
+        "summary": "Get Candidate Evaluations",
+        "description": "Lists candidate model runs and evaluation gate outcomes.",
+        "operationId": "get_candidate_evaluations_api_v1_organizations__organization_id__ml_pipeline_candidates_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/ml/shadow/configure": {
+      "post": {
+        "tags": [
+          "mlops"
+        ],
+        "summary": "Configure Shadow Serving",
+        "description": "Configures shadow model scoring alongside production inference.",
+        "operationId": "configure_shadow_serving_api_v1_organizations__organization_id__ml_shadow_configure_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "enabled",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "title": "Enabled"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/ml/shadow/metrics": {
+      "get": {
+        "tags": [
+          "mlops"
+        ],
+        "summary": "Get Shadow Metrics",
+        "description": "Reports real-time prediction divergence metrics between active and shadow models.",
+        "operationId": "get_shadow_metrics_api_v1_organizations__organization_id__ml_shadow_metrics_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/organizations/{organization_id}/machines/{machine_id}/audit-dossier": {
       "get": {
         "tags": [

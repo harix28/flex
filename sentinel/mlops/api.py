@@ -219,4 +219,60 @@ def mlops_router(database, settings, predictor=None) -> APIRouter:
             )
             return result
 
+    @router.post('/pipeline/evaluate-candidate')
+    def evaluate_candidate(
+        organization_id: UUID,
+        request: Request,
+        candidate_version: str = Query('fd001-v2-candidate'),
+        candidate_test_mae: float = Query(15.80),
+        near_failure_candidate: float = Query(4.20),
+        candidate_hash: str = Query('a' * 64)
+    ):
+        """Runs the automated candidate evaluation pipeline and checks promotion gates."""
+        with scoped_tenant(request, organization_id, 'predictions.create') as (s, actor):
+            from sentinel.mlops.pipeline import evaluate_candidate_gate
+            active_version = predictor.meta.get('version', 'fd001-v1') if predictor else 'fd001-v1'
+            active_hash = predictor.bundle_sha256 if predictor else '0' * 64
+            active_test_mae = 16.14
+            near_failure_active = 4.00
+
+            res = evaluate_candidate_gate(
+                candidate_version=candidate_version,
+                active_version=active_version,
+                active_test_mae=active_test_mae,
+                candidate_test_mae=candidate_test_mae,
+                near_failure_active=near_failure_active,
+                near_failure_candidate=near_failure_candidate,
+                candidate_hash=candidate_hash,
+                active_hash=active_hash
+            )
+            return res
+
+    @router.get('/pipeline/candidates')
+    def get_candidate_evaluations(organization_id: UUID, request: Request):
+        """Lists candidate model runs and evaluation gate outcomes."""
+        with scoped_tenant(request, organization_id, 'predictions.read'):
+            from sentinel.mlops.pipeline import list_candidate_evaluations
+            return {'items': list_candidate_evaluations()}
+
+    @router.post('/shadow/configure')
+    def configure_shadow_serving(
+        organization_id: UUID,
+        request: Request,
+        enabled: bool = Query(...),
+        version: str | None = Query(None)
+    ):
+        """Configures shadow model scoring alongside production inference."""
+        with scoped_tenant(request, organization_id, 'predictions.create'):
+            from sentinel.mlops.shadow import shadow_manager
+            shadow_manager.configure(enabled, version)
+            return {'shadow_enabled': enabled, 'shadow_version': version}
+
+    @router.get('/shadow/metrics')
+    def get_shadow_metrics(organization_id: UUID, request: Request):
+        """Reports real-time prediction divergence metrics between active and shadow models."""
+        with scoped_tenant(request, organization_id, 'predictions.read'):
+            from sentinel.mlops.shadow import shadow_manager
+            return {'metrics': shadow_manager.get_metrics()}
+
     return router
