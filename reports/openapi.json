@@ -4082,6 +4082,389 @@
         }
       }
     },
+    "/api/v1/organizations/{organization_id}/notifications/webhooks": {
+      "get": {
+        "tags": [
+          "Notifications & Alerts"
+        ],
+        "summary": "Get Webhooks",
+        "description": "Lists registered notification webhooks for the tenant.",
+        "operationId": "get_webhooks_api_v1_organizations__organization_id__notifications_webhooks_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Notifications & Alerts"
+        ],
+        "summary": "Create Webhook",
+        "description": "Registers a new outbound notification webhook for the tenant.",
+        "operationId": "create_webhook_api_v1_organizations__organization_id__notifications_webhooks_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/notifications/webhooks/{webhook_id}": {
+      "delete": {
+        "tags": [
+          "Notifications & Alerts"
+        ],
+        "summary": "Remove Webhook",
+        "description": "Deletes a registered notification webhook.",
+        "operationId": "remove_webhook_api_v1_organizations__organization_id__notifications_webhooks__webhook_id__delete",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "webhook_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Webhook Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/notifications/test": {
+      "post": {
+        "tags": [
+          "Notifications & Alerts"
+        ],
+        "summary": "Trigger Test Notification",
+        "description": "Dispatches an immediate signed test notification event to all registered webhooks.",
+        "operationId": "trigger_test_notification_api_v1_organizations__organization_id__notifications_test_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestNotification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/notifications/history": {
+      "get": {
+        "tags": [
+          "Notifications & Alerts"
+        ],
+        "summary": "Get History",
+        "description": "Retrieves recent notification delivery logs for audit.",
+        "operationId": "get_history_api_v1_organizations__organization_id__notifications_history_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/jobs/fleet-score": {
+      "post": {
+        "tags": [
+          "Background Jobs"
+        ],
+        "summary": "Submit Fleet Scoring Job",
+        "description": "Submits an asynchronous fleet-wide scoring job to the PostgreSQL outbox queue.",
+        "operationId": "submit_fleet_scoring_job_api_v1_organizations__organization_id__jobs_fleet_score_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/jobs": {
+      "get": {
+        "tags": [
+          "Background Jobs"
+        ],
+        "summary": "List Jobs",
+        "description": "Lists background outbox jobs and their processing statuses for this tenant.",
+        "operationId": "list_jobs_api_v1_organizations__organization_id__jobs_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "Background Jobs"
+        ],
+        "summary": "Get Job Detail",
+        "description": "Retrieves details and execution results of a specific background job.",
+        "operationId": "get_job_detail_api_v1_organizations__organization_id__jobs__job_id__get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -5097,6 +5480,22 @@
         ],
         "title": "Source"
       },
+      "TestNotification": {
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "title": "Event Type",
+            "default": "alert.urgent"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Simulated test alert: Engine NASA-FD001-TEST-76 reached URGENT threshold (RUL: 2.5 cycles)"
+          }
+        },
+        "type": "object",
+        "title": "TestNotification"
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -5136,6 +5535,44 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WebhookCreate": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url",
+            "description": "Target HTTPS/HTTP webhook URL"
+          },
+          "secret": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Secret",
+            "description": "Shared secret for HMAC-SHA256 signature verification"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Events",
+            "default": [
+              "alert.urgent",
+              "alert.high",
+              "work_order.created"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "title": "Label",
+            "default": "Main Alert Webhook"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "secret"
+        ],
+        "title": "WebhookCreate"
       },
       "WorkOrderAssign": {
         "properties": {
