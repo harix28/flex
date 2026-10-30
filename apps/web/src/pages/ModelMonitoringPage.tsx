@@ -89,7 +89,7 @@ export const ModelMonitoringPage: React.FC = () => {
   const latestEvalRun = monitoringRuns.find((r) => r.run_type === 'evaluation');
 
   return (
-    <div style={{ padding: '1.5rem 2rem', maxWidth: '1440px', margin: '0 auto' }}>
+    <div style={{ padding: '1.5rem 2rem', width: '100%' }}>
       {/* Header */}
       <div
         style={{

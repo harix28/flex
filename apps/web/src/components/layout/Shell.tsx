@@ -53,8 +53,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
       >
         <div
           style={{
-            maxWidth: '1440px',
-            margin: '0 auto',
+            width: '100%',
             padding: '0.75rem 1.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -162,9 +161,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
         style={{
           display: 'flex',
           flex: 1,
-          maxWidth: '1440px',
           width: '100%',
-          margin: '0 auto',
           minHeight: 0,
           overflow: 'hidden',
         }}
