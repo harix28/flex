@@ -19,3 +19,6 @@ MarkupSafe==3.0.4
 # Phase 3 local identity
 argon2-cffi==25.1.0
 email-validator==2.3.0
+
+# Audit dossier PDF export
+matplotlib==3.11.2
