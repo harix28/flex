@@ -43,33 +43,33 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
   if (isTechnician) {
     // Role 3: Maintenance Technician Allocation (Execution, telemetry inspection, parts lookup)
     navItems = [
-      { id: 'work-orders', label: 'My Assigned Tasks', icon: Wrench },
-      { id: 'machines', label: 'Assigned Engines & Sensors', icon: Cpu },
-      { id: 'planning', label: 'Warehouse Spare Parts', icon: Boxes },
+      { id: 'work-orders', label: 'My Tasks', icon: Wrench },
+      { id: 'machines', label: 'My Engines', icon: Cpu },
+      { id: 'planning', label: 'Spare Parts', icon: Boxes },
     ];
   } else if (isMaintenanceEngineer && !isGeneralManager) {
     // Role 2: Maintenance Engineer Allocation (Planning, approvals, fleet scoring, MLOps)
     navItems = [
-      { id: 'overview', label: 'Engine Health Dashboard', icon: LayoutDashboard },
-      { id: 'machines', label: 'All Engines & Equipment', icon: Cpu },
-      { id: 'work-orders', label: 'Repair Jobs & Approvals', icon: Wrench },
-      { id: 'planning', label: 'Spare Parts & Shift Rosters', icon: Boxes },
-      { id: 'jobs', label: 'Automated Engine Checkups', icon: ListChecks },
-      { id: 'model-monitoring', label: 'AI Accuracy & Health Checks', icon: Activity },
-      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Machine Settings', icon: Layers }] : []),
+      { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+      { id: 'machines', label: 'Engines', icon: Cpu },
+      { id: 'work-orders', label: 'Repair Jobs', icon: Wrench },
+      { id: 'planning', label: 'Spare Parts', icon: Boxes },
+      { id: 'jobs', label: 'Auto Checkups', icon: ListChecks },
+      { id: 'model-monitoring', label: 'AI Health', icon: Activity },
+      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Settings', icon: Layers }] : []),
     ];
   } else {
     // Role 1: General Manager (Admin) Allocation (Executive oversight, members, integrations)
     navItems = [
-      { id: 'overview', label: 'Executive Health Dashboard', icon: LayoutDashboard },
-      { id: 'machines', label: 'All Engines & Equipment', icon: Cpu },
-      { id: 'work-orders', label: 'Repair Jobs Oversight', icon: Wrench },
-      { id: 'planning', label: 'Spare Parts & Shift Rosters', icon: Boxes },
-      { id: 'jobs', label: 'Automated Engine Checkups', icon: ListChecks },
-      { id: 'integrations', label: 'Connected Systems & APIs', icon: Share2 },
-      { id: 'model-monitoring', label: 'AI Accuracy & Health Checks', icon: Activity },
-      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Machine Settings', icon: Layers }] : []),
-      ...(canManageMembers() ? [{ id: 'members' as NavigationPage, label: 'Team Members & Access', icon: Users }] : []),
+      { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+      { id: 'machines', label: 'Engines', icon: Cpu },
+      { id: 'work-orders', label: 'Repair Jobs', icon: Wrench },
+      { id: 'planning', label: 'Spare Parts', icon: Boxes },
+      { id: 'jobs', label: 'Auto Checkups', icon: ListChecks },
+      { id: 'integrations', label: 'Connections', icon: Share2 },
+      { id: 'model-monitoring', label: 'AI Health', icon: Activity },
+      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Settings', icon: Layers }] : []),
+      ...(canManageMembers() ? [{ id: 'members' as NavigationPage, label: 'Team', icon: Users }] : []),
     ];
   }
 
