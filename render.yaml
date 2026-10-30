@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: meridian-sentinel
+    runtime: docker
+    dockerfilePath: backend/Dockerfile.public
+    plan: free
+    region: oregon
+    envVars:
+      - key: MIGRATION_DATABASE_URL
+        fromDatabase:
+          name: meridian-db
+          property: connectionString
+      - key: SENTINEL_RUNTIME_PASSWORD
+        generateValue: true
+      - key: SENTINEL_API_KEY
+        generateValue: true
+
+databases:
+  - name: meridian-db
+    databaseName: meridian
+    user: sentinel_owner
+    plan: free
+    region: oregon
