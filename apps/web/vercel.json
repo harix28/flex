@@ -1,9 +1,16 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://meridian-sentinel.onrender.com/api/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://meridian-sentinel.onrender.com/health"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-

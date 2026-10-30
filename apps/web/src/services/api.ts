@@ -97,11 +97,22 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const apiBase = ((import.meta as any).env?.VITE_BACKEND_URL || '').replace(/\/$/, '');
   const url = endpoint.startsWith('http') ? endpoint : `${apiBase}${endpoint}`;
 
-  const response = await fetch(url, {
-    ...rest,
-    headers,
-    credentials: 'include', // Host-only HttpOnly session cookie
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...rest,
+      headers,
+      credentials: 'include', // Host-only HttpOnly session cookie
+    });
+  } catch (netErr: any) {
+    throw new ApiError(
+      0,
+      'network_error',
+      'Unable to connect to backend service. Please verify that the backend server is running and reachable.',
+      undefined,
+      netErr
+    );
+  }
 
   const contentType = response.headers.get('content-type') || '';
   const isJson = contentType.includes('application/json');
@@ -124,6 +135,12 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
       if (typeof data.error?.code === 'string') {
         code = data.error.code;
         message = data.error.message || formatErrorCode(code);
+      } else if (typeof data.error === 'string') {
+        code = 'error';
+        message = data.error;
+      } else if (typeof data.message === 'string') {
+        code = 'message';
+        message = data.message;
       } else if (typeof data.detail === 'string') {
         code = data.detail;
         message = formatErrorCode(data.detail);
@@ -143,13 +160,16 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
         message = 'You do not have permission to perform this action.';
       } else if (status === 404) {
         code = 'not_found';
-        message = 'Requested resource not found.';
+        message = 'Requested API endpoint was not found on the backend.';
+      } else if (status === 405) {
+        code = 'method_not_allowed';
+        message = 'HTTP 405 Method Not Allowed. Backend route not found or static proxy misconfigured.';
       } else if (status === 429) {
         code = 'rate_limited';
         message = 'Too many requests. Please wait a few moments before trying again.';
       } else if (status >= 500) {
         code = 'backend_unavailable';
-        message = 'Backend service is currently unavailable. Please verify backend status.';
+        message = 'Backend service is currently unavailable (HTTP ' + status + '). Please verify backend status on Render.';
       }
     }
 

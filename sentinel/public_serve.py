@@ -8,6 +8,45 @@ from .config import load_settings, validate_database_url
 from .container_setup import migrate_and_grant
 
 
+def seed_demo_accounts(db_url: str):
+    from sqlalchemy import create_engine, text
+    from .auth.service import create_user
+    engine = create_engine(db_url, hide_parameters=True)
+    try:
+        with engine.begin() as conn:
+            exists = conn.execute(text("SELECT id FROM users WHERE email='admin@meridian.example.com'")).scalar_one_or_none()
+            if exists:
+                return
+            tenant = conn.execute(text("SELECT id FROM tenants WHERE slug='meridian-a'")).scalar_one_or_none()
+            if not tenant:
+                tenant = conn.execute(
+                    text("INSERT INTO tenants(name, slug) VALUES ('Meridian Turbofan Maintenance', 'meridian-a') RETURNING id")
+                ).scalar_one()
+
+            admin_id = create_user(conn, 'admin@meridian.example.com', 'Password12345!', 'Chief Maintenance Inspector (Admin)')
+            conn.execute(
+                text("INSERT INTO memberships(tenant_id, user_id, roles) VALUES (:t, :u, ARRAY['admin', 'manager', 'technician'])"),
+                dict(t=tenant, u=admin_id)
+            )
+
+            mgr_id = create_user(conn, 'manager@meridian.example.com', 'Password12345!', 'Maintenance Operations Lead')
+            conn.execute(
+                text("INSERT INTO memberships(tenant_id, user_id, roles) VALUES (:t, :u, ARRAY['manager'])"),
+                dict(t=tenant, u=mgr_id)
+            )
+
+            tech_id = create_user(conn, 'tech@meridian.example.com', 'Password12345!', 'Lead Turbofan Technician (A&P)')
+            conn.execute(
+                text("INSERT INTO memberships(tenant_id, user_id, roles) VALUES (:t, :u, ARRAY['technician'])"),
+                dict(t=tenant, u=tech_id)
+            )
+            print("Successfully auto-seeded baseline demo accounts into PostgreSQL.")
+    except Exception as e:
+        print(f"Demo seeding note: {e}", file=sys.stderr)
+    finally:
+        engine.dispose()
+
+
 def main():
     try:
         # Normalize database URLs from Render or cloud providers (e.g. postgres:// -> postgresql+psycopg://)
@@ -51,11 +90,22 @@ def main():
         # Normalize origins: strip whitespace and trailing slashes
         raw_origins = os.environ.get('SENTINEL_AUTH_ORIGINS') or os.environ.get('RENDER_EXTERNAL_URL', '')
         origins = [o.strip().rstrip('/') for o in raw_origins.split(',') if o.strip()]
-        if origins:
-            os.environ['SENTINEL_AUTH_ORIGINS'] = ','.join(origins)
-        elif not os.environ.get('SENTINEL_AUTH_ORIGINS'):
-            # Safe default fallback for Render web service URL format
-            os.environ['SENTINEL_AUTH_ORIGINS'] = 'https://meridian-sentinel.onrender.com'
+        for default_origin in (
+            'https://meridian-sentinel.onrender.com',
+            'https://meridian-sentinel.vercel.app',
+            'https://flex-apps.vercel.app',
+            'http://localhost:8080',
+            'http://localhost:5173',
+            'http://127.0.0.1:8080',
+            'http://127.0.0.1:5173',
+        ):
+            if default_origin not in origins:
+                origins.append(default_origin)
+        os.environ['SENTINEL_AUTH_ORIGINS'] = ','.join(origins)
+
+        # Ensure baseline demo accounts exist when database is attached
+        if os.environ.get('DATABASE_URL'):
+            seed_demo_accounts(os.environ['DATABASE_URL'])
 
         # Auto-generate secure API key if not explicitly set in environment
         if not os.environ.get('SENTINEL_API_KEY'):
