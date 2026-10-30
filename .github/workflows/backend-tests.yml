@@ -5,6 +5,11 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      SENTINEL_API_KEY: 'test-api-key-for-hermetic-unit-tests-0123456789'
+      SENTINEL_MODEL_DIR: runs/fd001-v1
+      SENTINEL_BUNDLE_SHA256: 06d46a9c4f5f71aeb220ade135e52e713a0bd41f362e7caf00eda743442e7cfd
+      SENTINEL_CLASSIFIER_DIR: runs/all-subsets-20261030-v1/COMBINED
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
