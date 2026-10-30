@@ -4723,6 +4723,168 @@
         }
       }
     },
+    "/api/v1/organizations/{organization_id}/integrations/status": {
+      "get": {
+        "tags": [
+          "Live Integrations & CMMS"
+        ],
+        "summary": "Get Integrations Status",
+        "description": "Returns health status of enterprise CMMS and IoT edge gateway connectors.",
+        "operationId": "get_integrations_status_api_v1_organizations__organization_id__integrations_status_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/integrations/gateway/telemetry": {
+      "post": {
+        "tags": [
+          "Live Integrations & CMMS"
+        ],
+        "summary": "Ingest Edge Telemetry",
+        "description": "Normalizes and ingests a live IoT edge sensor frame (MQTT / OPC-UA).",
+        "operationId": "ingest_edge_telemetry_api_v1_organizations__organization_id__integrations_gateway_telemetry_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/integrations/cmms/export/{work_order_id}": {
+      "post": {
+        "tags": [
+          "Live Integrations & CMMS"
+        ],
+        "summary": "Export Work Order To Cmms",
+        "description": "Exports an approved work order to SAP PM or IBM Maximo structure.\nEnforces human-in-the-loop approval policy: rejected if in 'draft' status.",
+        "operationId": "export_work_order_to_cmms_api_v1_organizations__organization_id__integrations_cmms_export__work_order_id__post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "work_order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Work Order Id"
+            }
+          },
+          {
+            "name": "target",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "sap_pm",
+                "maximo"
+              ],
+              "type": "string",
+              "default": "sap_pm",
+              "title": "Target"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
