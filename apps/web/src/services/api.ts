@@ -765,3 +765,59 @@ export const mlopsApi = {
     );
   },
 };
+
+// ==========================================
+// ADMIN ML PIPELINE (DATASET -> EDA -> RUL)
+// ==========================================
+
+export interface AdminPipelineResponse {
+  status: string;
+  filename: string;
+  cleaning: {
+    initial_rows: number;
+    cleaned_rows: number;
+    dropped_rows: number;
+    missing_sensors_padded: string[];
+    unique_engines_found: number;
+  };
+  eda_analysis: Record<string, {
+    mean: number;
+    std: number;
+    min: number;
+    max: number;
+    degradation_slope: number;
+    cycle_correlation: number;
+    status: 'constant' | 'degrading' | 'active';
+  }>;
+  feature_engineering: {
+    schema: string;
+    feature_count_per_window: number;
+    feature_names_sample: string[];
+    windows_computed: number;
+  };
+  ingested_fleet: Array<{
+    engine_id: number;
+    asset_code: string;
+    machine_id: string;
+    total_cycles_ingested: number;
+    estimated_rul: string;
+    priority_band: string;
+  }>;
+  dashboard_message: string;
+}
+
+export const adminPipelineApi = {
+  async processDataset(tenantId: string, file: File): Promise<AdminPipelineResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return request<AdminPipelineResponse>(
+      `/api/v1/organizations/${tenantId}/admin/pipeline/process-dataset`,
+      {
+        method: 'POST',
+        body: formData,
+        requiresCsrf: true,
+      }
+    );
+  },
+};
+

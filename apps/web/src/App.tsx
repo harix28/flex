@@ -10,6 +10,7 @@ import { WorkOrderDetailPage } from './pages/WorkOrderDetailPage';
 import { RegistryPage } from './pages/RegistryPage';
 import { MembersPage } from './pages/MembersPage';
 import { ModelMonitoringPage } from './pages/ModelMonitoringPage';
+import { AdminPipelinePage } from './pages/AdminPipelinePage';
 import { LoadingState } from './components/common/LoadingState';
 
 export const App: React.FC = () => {
@@ -41,6 +42,8 @@ export const App: React.FC = () => {
         setCurrentPage('registry');
       } else if (route === 'members') {
         setCurrentPage('members');
+      } else if (route === 'admin-pipeline') {
+        setCurrentPage('admin-pipeline');
       } else {
         setCurrentPage('overview');
       }
@@ -127,6 +130,13 @@ export const App: React.FC = () => {
       {currentPage === 'registry' && <RegistryPage />}
 
       {currentPage === 'members' && <MembersPage />}
+
+      {currentPage === 'admin-pipeline' && (
+        <AdminPipelinePage
+          onNavigateToOverview={() => navigateTo('overview')}
+          onSelectMachine={(mId) => navigateTo('machine-detail', { machineId: mId })}
+        />
+      )}
     </Shell>
   );
 };
