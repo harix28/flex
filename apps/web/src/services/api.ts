@@ -764,4 +764,18 @@ export const mlopsApi = {
       { method: 'GET' }
     );
   },
+
+  async triggerDriftMonitoring(tenantId: string, minSamples = 5): Promise<any> {
+    return request<any>(
+      `/api/v1/organizations/${tenantId}/ml/monitoring/drift?min_samples=${minSamples}`,
+      { method: 'POST' }
+    );
+  },
+
+  async triggerEvaluation(tenantId: string, subset = 'FD001'): Promise<any> {
+    return request<any>(
+      `/api/v1/organizations/${tenantId}/ml/monitoring/evaluation?subset=${subset}`,
+      { method: 'POST' }
+    );
+  },
 };

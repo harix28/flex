@@ -1,12 +1,17 @@
 """REST API endpoints for tenant-scoped MLOps model information, observability, and monitoring."""
 from contextlib import contextmanager
 from uuid import UUID
+from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query, Request
 from sqlalchemy import text
+from sentinel.config import ROOT
 from sentinel.auth.context import AuthContext
+from sentinel.auth.service import lock_tenant
 from sentinel.mlops.observability import get_tenant_observability
 from sentinel.mlops.registry import get_model
 from sentinel.mlops.deployment import get_deployment_status
+from sentinel.mlops.drift import evaluate_input_drift
+from sentinel.mlops.evaluation import evaluate_predictions_performance
 
 
 def mlops_router(database, settings, predictor=None) -> APIRouter:
@@ -14,9 +19,13 @@ def mlops_router(database, settings, predictor=None) -> APIRouter:
     auth = AuthContext(database, settings)
 
     @contextmanager
-    def scoped_tenant(request: Request, tenant_id: UUID, permission: str = 'predictions.read'):
+    def scoped_tenant(request: Request, tenant_id: UUID, permission: str = 'predictions.read', write: bool = False):
         with auth.transaction(request) as s:
             actor = auth.principal(s, request)
+            if write:
+                auth.csrf(request, actor)
+                lock_tenant(s, tenant_id)
+                actor = auth.principal(s, request)
             auth.membership(s, actor, tenant_id, permission)
             yield s, actor
 
@@ -64,8 +73,20 @@ def mlops_router(database, settings, predictor=None) -> APIRouter:
                 return {'status': 'incompatible_registry', 'deployment_state': 'active_untracked',
                         'message': 'Running artifact does not match the registered identity'}
             eval_metrics = model_record['evaluation_metrics']
+            supported_models = {}
+            if predictor and hasattr(predictor, 'predictors'):
+                for sub, p in predictor.predictors.items():
+                    supported_models[sub] = {
+                        'version': p.meta.get('version'),
+                        'model_type': p.meta.get('model_type'),
+                        'window': p.meta.get('window'),
+                        'subset': sub,
+                        'metrics': p.report.get('official_test', {}),
+                    }
+
             return {
                 'status': 'active',
+                'supported_models': supported_models,
                 'model_version': model_record['model_version'],
                 'model_family': model_record['model_family'],
                 'bundle_digest': model_record['bundle_digest'],
@@ -166,5 +187,36 @@ def mlops_router(database, settings, predictor=None) -> APIRouter:
                 'created_at': row['created_at'].isoformat(),
                 'metrics': row['metrics']
             }
+
+    @router.post('/monitoring/drift')
+    def trigger_drift_run(
+        organization_id: UUID,
+        request: Request,
+        min_samples: int = Query(5, ge=1, le=1000)
+    ):
+        """Triggers an input feature drift monitoring run for this tenant."""
+        with scoped_tenant(request, organization_id, 'predictions.create', write=True) as (s, actor):
+            actor_name = f"user:{actor.get('email', actor.get('id', 'admin'))}"
+            running_version = predictor.meta.get('version', 'fd001-v1') if predictor else 'fd001-v1'
+            result = evaluate_input_drift(s, organization_id, model_version=running_version, actor=actor_name, min_samples=min_samples)
+            return result
+
+    @router.post('/monitoring/evaluation')
+    def trigger_evaluation_run(
+        organization_id: UUID,
+        request: Request,
+        subset: str = Query('FD001', pattern='^(FD001|FD002|FD003|FD004)$')
+    ):
+        """Triggers an offline ground-truth performance evaluation run against reference labels."""
+        with scoped_tenant(request, organization_id, 'predictions.create', write=True) as (s, actor):
+            actor_name = f"user:{actor.get('email', actor.get('id', 'admin'))}"
+            labels_path = ROOT / 'data' / 'raw' / f'RUL_{subset}.txt'
+            if not labels_path.exists():
+                raise HTTPException(404, 'labels_file_not_found')
+            running_version = predictor.meta.get('version', 'fd001-v1') if predictor else 'fd001-v1'
+            result = evaluate_predictions_performance(
+                s, organization_id, labels_path=labels_path, subset=subset, model_version=running_version, actor=actor_name
+            )
+            return result
 
     return router

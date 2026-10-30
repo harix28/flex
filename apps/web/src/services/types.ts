@@ -389,6 +389,13 @@ export interface ModelInfo {
   benchmark_metrics: ModelBenchmarkMetrics;
   benchmark_protocol: string;
   disclaimer: string;
+  supported_models?: Record<string, {
+    version: string;
+    model_type: string;
+    window: number;
+    subset: string;
+    metrics: Record<string, any>;
+  }>;
 }
 
 export interface LatencyStats {

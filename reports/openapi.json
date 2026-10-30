@@ -3923,6 +3923,113 @@
         }
       }
     },
+    "/api/v1/organizations/{organization_id}/ml/monitoring/drift": {
+      "post": {
+        "tags": [
+          "mlops"
+        ],
+        "summary": "Trigger Drift Run",
+        "description": "Triggers an input feature drift monitoring run for this tenant.",
+        "operationId": "trigger_drift_run_api_v1_organizations__organization_id__ml_monitoring_drift_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "min_samples",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 5,
+              "title": "Min Samples"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{organization_id}/ml/monitoring/evaluation": {
+      "post": {
+        "tags": [
+          "mlops"
+        ],
+        "summary": "Trigger Evaluation Run",
+        "description": "Triggers an offline ground-truth performance evaluation run against reference labels.",
+        "operationId": "trigger_evaluation_run_api_v1_organizations__organization_id__ml_monitoring_evaluation_post",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "subset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(FD001|FD002|FD003|FD004)$",
+              "default": "FD001",
+              "title": "Subset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",

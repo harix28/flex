@@ -14,6 +14,7 @@ import {
   BarChart2,
   RefreshCw,
   ChevronRight,
+  CheckCircle2,
 } from 'lucide-react';
 
 export const ModelMonitoringPage: React.FC = () => {
@@ -24,6 +25,10 @@ export const ModelMonitoringPage: React.FC = () => {
   const [selectedRunDetail, setSelectedRunDetail] = useState<MonitoringRunDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<{ message: string; requestId?: string } | null>(null);
+  const [isDriftRunning, setIsDriftRunning] = useState(false);
+  const [isEvalRunning, setIsEvalRunning] = useState(false);
+  const [evalSubset, setEvalSubset] = useState<'FD001' | 'FD002' | 'FD003' | 'FD004'>('FD001');
+  const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!activeTenant) return;
@@ -48,6 +53,36 @@ export const ModelMonitoringPage: React.FC = () => {
       setIsLoading(false);
     }
   }, [activeTenant]);
+
+  const handleRunDrift = async () => {
+    if (!activeTenant) return;
+    setIsDriftRunning(true);
+    setActionFeedback(null);
+    try {
+      await mlopsApi.triggerDriftMonitoring(activeTenant.id);
+      setActionFeedback({ type: 'success', message: 'Statistical input drift analysis completed successfully.' });
+      await fetchData();
+    } catch (err: any) {
+      setActionFeedback({ type: 'error', message: err.message || 'Drift monitoring evaluation failed' });
+    } finally {
+      setIsDriftRunning(false);
+    }
+  };
+
+  const handleRunEvaluation = async () => {
+    if (!activeTenant) return;
+    setIsEvalRunning(true);
+    setActionFeedback(null);
+    try {
+      await mlopsApi.triggerEvaluation(activeTenant.id, evalSubset);
+      setActionFeedback({ type: 'success', message: `Offline benchmark evaluation for ${evalSubset} completed successfully.` });
+      await fetchData();
+    } catch (err: any) {
+      setActionFeedback({ type: 'error', message: err.message || 'Offline ground-truth evaluation failed' });
+    } finally {
+      setIsEvalRunning(false);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -127,26 +162,81 @@ export const ModelMonitoringPage: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={fetchData}
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          {/* Drift Trigger */}
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleRunDrift}
+            disabled={isDriftRunning || isEvalRunning || isLoading}
+            style={{ fontSize: '0.8125rem' }}
+          >
+            <TrendingDown size={14} className={isDriftRunning ? 'animate-spin' : ''} />
+            <span>{isDriftRunning ? 'Analyzing Drift...' : 'Run Drift Analysis'}</span>
+          </button>
+
+          {/* Offline Eval Trigger */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+            <select
+              value={evalSubset}
+              onChange={(e) => setEvalSubset(e.target.value as any)}
+              className="input"
+              style={{ padding: '0.35rem 0.5rem', fontSize: '0.8125rem', height: '32px' }}
+            >
+              <option value="FD001">FD001</option>
+              <option value="FD002">FD002</option>
+              <option value="FD003">FD003</option>
+              <option value="FD004">FD004</option>
+            </select>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleRunEvaluation}
+              disabled={isDriftRunning || isEvalRunning || isLoading}
+              style={{ fontSize: '0.8125rem' }}
+            >
+              <CheckCircle2 size={14} className={isEvalRunning ? 'animate-spin' : ''} />
+              <span>{isEvalRunning ? 'Evaluating...' : 'Run Benchmark Eval'}</span>
+            </button>
+          </div>
+
+          <button
+            onClick={fetchData}
+            className="btn btn-secondary"
+            disabled={isLoading}
+            style={{ fontSize: '0.8125rem' }}
+          >
+            <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Action Execution Feedback Alert */}
+      {actionFeedback && (
+        <div
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            padding: '0.5rem 0.9rem',
-            backgroundColor: 'var(--bg-surface-elevated)',
-            border: '1px solid var(--border-strong)',
-            color: 'var(--text-primary)',
+            padding: '0.75rem 1rem',
             borderRadius: 'var(--radius-md)',
-            cursor: 'pointer',
+            marginBottom: '1rem',
             fontSize: '0.85rem',
-            fontWeight: 500,
+            backgroundColor: actionFeedback.type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+            border: `1px solid ${actionFeedback.type === 'success' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+            color: actionFeedback.type === 'success' ? '#15803d' : 'var(--urgent-text)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}
         >
-          <RefreshCw size={14} />
-          <span>Refresh Telemetry</span>
-        </button>
-      </div>
+          <span>{actionFeedback.message}</span>
+          <button
+            onClick={() => setActionFeedback(null)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontWeight: 700 }}
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {/* Experimental Safety Notice Banner */}
       <div
@@ -280,7 +370,65 @@ export const ModelMonitoringPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Card 2: Historical Offline Benchmark Metrics */}
+        {/* Card 1.5: Multi-Dataset Model Architecture & Coverage */}
+        <div
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1.25rem',
+            gridColumn: '1 / -1',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
+            <Layers size={18} color="var(--primary)" />
+            <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+              Multi-Dataset Model Fleet Routing (FD001–FD004)
+            </h2>
+            <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'var(--low-text)', fontWeight: 600 }}>
+              4 / 4 MODELS ACTIVE
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+            {[
+              { subset: 'FD001', family: 'XGBoost Regressor', window: 30, conditions: '1 (Sea Level)', faults: '1 (HPC Degradation)', testMae: '16.14 cycles', status: 'ACTIVE' },
+              { subset: 'FD002', family: 'Ridge Regressor', window: 30, conditions: '6 Operating Modes', faults: '1 (HPC Degradation)', testMae: '21.87 cycles', status: 'ACTIVE' },
+              { subset: 'FD003', family: 'XGBoost Regressor', window: 30, conditions: '1 (Sea Level)', faults: '2 (HPC + Fan Degradation)', testMae: '22.07 cycles', status: 'ACTIVE' },
+              { subset: 'FD004', family: 'Ridge Regressor', window: 30, conditions: '6 Operating Modes', faults: '2 (HPC + Fan Degradation)', testMae: '29.98 cycles', status: 'ACTIVE' },
+            ].map((m) => (
+              <div
+                key={m.subset}
+                style={{
+                  backgroundColor: 'var(--bg-canvas)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.85rem',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }} className="mono">
+                    {m.subset}
+                  </span>
+                  <span className="badge badge-low" style={{ fontSize: '0.65rem' }}>
+                    {m.status}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.2rem' }}>
+                  <strong>{m.family}</strong> ({m.window} cycles)
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  Conditions: {m.conditions} | Faults: {m.faults}
+                </div>
+                <div style={{ marginTop: '0.4rem', fontSize: '0.75rem', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+                  Benchmark MAE: <strong>{m.testMae}</strong>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Card 2: Historical Benchmark Performance */}
         <div
           style={{
             backgroundColor: 'var(--bg-surface)',

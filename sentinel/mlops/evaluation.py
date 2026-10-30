@@ -110,10 +110,10 @@ def evaluate_predictions_performance(
             'metrics': metrics
         }
 
-    machine_by_id = {m['id']: m for m in machines}
-    for machine in machines:
-        if machine['file_sha256'] != expected_source_hash or machine['engine_id'] not in endpoints:
-            raise GroundTruthEvaluationError('Registered stream does not match verified evaluation source')
+    eligible_machines = [m for m in machines if m['file_sha256'] == expected_source_hash and m['engine_id'] in endpoints]
+    if not eligible_machines:
+        raise GroundTruthEvaluationError('No machines matched verified evaluation source')
+    machine_by_id = {m['id']: m for m in eligible_machines}
 
     # Query available predictions for these machines
     pred_rows = session.execute(
