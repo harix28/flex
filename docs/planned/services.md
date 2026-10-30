@@ -4,9 +4,13 @@ This specification describes planned asynchronous background processing services
 
 ## Status
 
-**Status: PLANNED / SPECIFICATION ONLY**
+**Status: PARTIALLY IMPLEMENTED — durable queue, operator-enqueued drift and bounded fleet scoring**
 
-The current implementation runs as a synchronous FastAPI backend in [sentinel/api.py](../../sentinel/api.py) and [sentinel/serve.py](../../sentinel/serve.py). Background processing queues have not yet been implemented.
+The FastAPI endpoints remain synchronous. The PostgreSQL outbox and a separate
+worker now support operator-enqueued drift evaluation and bounded fleet scoring in `sentinel/jobs/`.
+See [operation and recovery](../BACKGROUND_JOBS.md). Asynchronous ingestion,
+notifications and periodic scheduling remain planned. Dead letters are retained in
+the queue and exposed through the `outbox_dead_letter` view.
 
 ---
 

@@ -77,3 +77,4 @@ def notifications_router(database, settings) -> APIRouter:
             return {'items': dispatcher.get_dispatch_history(organization_id)}
 
     return router
+

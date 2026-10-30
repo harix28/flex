@@ -67,3 +67,4 @@ def planning_router(database, settings) -> APIRouter:
                 raise HTTPException(404, str(e))
 
     return router
+

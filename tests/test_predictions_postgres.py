@@ -20,14 +20,14 @@ pytestmark = pytest.mark.postgres
 DEFAULT_SETTINGS = load_settings()
 
 
-def pred_client(setup, **changes):
+def pred_client(setup, *, predictor=None, **changes):
     s = replace(
         setup['settings'],
         model_dir=DEFAULT_SETTINGS.model_dir,
         bundle_sha256=DEFAULT_SETTINGS.bundle_sha256,
         **changes
     )
-    return TestClient(create_app(settings=s), base_url=ORIGIN)
+    return TestClient(create_app(settings=s, predictor=predictor), base_url=ORIGIN)
 
 
 def registered_machine(c, setup, h, subset='FD001', engine_id=1, **extra):
@@ -195,7 +195,9 @@ def test_gap_filled_allows_new_successful_prediction(setup):
 
 
 def test_unsupported_machine_and_subset(setup):
-    with pred_client(setup) as c:
+    # Test a single-model compatibility boundary independently of installed candidates.
+    predictor = Predictor(DEFAULT_SETTINGS.model_dir, DEFAULT_SETTINGS.bundle_sha256)
+    with pred_client(setup, predictor=predictor) as c:
         h = login(c, setup)
         base = f"/api/v1/organizations/{setup['a']}"
 

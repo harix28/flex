@@ -10,6 +10,7 @@ import json
 import logging
 from uuid import UUID
 from datetime import datetime, timezone
+from sqlalchemy import text
 
 from sentinel.db import Database
 from sentinel.config import load_settings, ROOT
@@ -125,33 +126,51 @@ class MCPServer:
         self.db = db
 
     def handle_list_machines(self, arguments: dict) -> dict:
-        org_id = UUID(arguments["organization_id"])
+        org_id = UUID(str(arguments["organization_id"]))
         limit = min(int(arguments.get("limit", 50)), 100)
         with self.db.transaction() as s:
-            res = registry_service.list_machines(s, org_id, limit=limit)
+            rows = s.execute(text("""
+                SELECT id, asset_code, machine_type, data_source, lifecycle_status,
+                       source_dataset, source_subset, source_engine_id, source_split, source_file_sha256
+                FROM machines
+                WHERE tenant_id = :t
+                ORDER BY asset_code ASC
+                LIMIT :limit
+            """), {'t': org_id, 'limit': limit}).mappings().all()
             machines = []
-            for m in res.get("items", []):
+            for m in rows:
+                binding = None
+                if m["source_dataset"]:
+                    binding = {
+                        "dataset": m["source_dataset"],
+                        "subset": m["source_subset"],
+                        "engine_id": m["source_engine_id"],
+                        "split": m["source_split"],
+                        "file_sha256": m["source_file_sha256"]
+                    }
                 machines.append({
                     "id": str(m["id"]),
                     "asset_code": m["asset_code"],
                     "machine_type": m["machine_type"],
                     "data_source": m["data_source"],
-                    "status": m["status"],
-                    "source_binding": m.get("source_binding"),
+                    "status": m["lifecycle_status"],
+                    "source_binding": binding,
                 })
             return {"total": len(machines), "machines": machines}
 
     def handle_get_sensor_trends(self, arguments: dict) -> dict:
-        org_id = UUID(arguments["organization_id"])
-        machine_id = UUID(arguments["machine_id"])
+        org_id = UUID(str(arguments["organization_id"]))
+        machine_id = UUID(str(arguments["machine_id"]))
         start_cycle = int(arguments.get("start_cycle", 1))
         limit = min(int(arguments.get("limit", 30)), 100)
 
         with self.db.transaction() as s:
-            dq = ingestion_service.get_data_quality(s, org_id, machine_id)
-            obs = ingestion_service.get_observations(
+            dq = ingestion_service.quality(s, org_id, machine_id, 1, None)
+            obs = ingestion_service.history(
                 s, org_id, machine_id,
-                start_cycle=start_cycle,
+                start=start_cycle,
+                end=start_cycle + limit - 1,
+                after=start_cycle - 1,
                 limit=limit
             )
             return {
@@ -169,10 +188,13 @@ class MCPServer:
             }
 
     def handle_get_prediction_evidence(self, arguments: dict) -> dict:
-        org_id = UUID(arguments["organization_id"])
-        machine_id = UUID(arguments["machine_id"])
+        org_id = UUID(str(arguments["organization_id"]))
+        machine_id = UUID(str(arguments["machine_id"]))
         with self.db.transaction() as s:
-            pred = predictions_service.get_latest_prediction(s, org_id, machine_id)
+            try:
+                pred = predictions_service.get_latest_prediction(s, org_id, machine_id)
+            except Exception:
+                pred = None
             if not pred:
                 return {
                     "machine_id": str(machine_id),
@@ -182,40 +204,39 @@ class MCPServer:
             return {
                 "machine_id": str(machine_id),
                 "prediction_id": str(pred["id"]),
-                "predicted_rul_cycles": pred["predicted_rul"],
-                "maintenance_priority": pred["priority"].upper(),
-                "cutoff_cycle": pred["cutoff_cycle"],
-                "model_version": pred["model_version"],
-                "model_bundle_sha256": pred["model_bundle_sha256"],
-                "input_digest": pred["input_digest"],
+                "predicted_rul_cycles": pred.get("predicted_rul"),
+                "maintenance_priority": str(pred.get("priority", "UNKNOWN")).upper(),
+                "cutoff_cycle": pred.get("cutoff_cycle"),
+                "model_version": pred.get("model_version"),
+                "model_bundle_sha256": pred.get("model_bundle_sha256"),
+                "input_digest": pred.get("input_digest"),
                 "policy_explanation": pred.get("policy_explanation"),
             }
 
     def handle_draft_work_order(self, arguments: dict) -> dict:
-        org_id = UUID(arguments["organization_id"])
-        machine_id = UUID(arguments["machine_id"])
+        org_id = UUID(str(arguments["organization_id"]))
+        machine_id = UUID(str(arguments["machine_id"]))
         title = arguments["title"]
         description = arguments["description"]
         priority = arguments.get("priority", "medium")
 
-        # Create system-actor UUID for assistant draft creation
-        assistant_actor = UUID("00000000-0000-0000-0000-000000000002")
-
         with self.db.transaction() as s:
-            draft = work_orders_service.create_work_order(
+            admin_user = s.execute(text("""
+                SELECT user_id FROM memberships
+                WHERE tenant_id = :t AND active AND 'admin' = ANY(roles)
+                LIMIT 1
+            """), {'t': org_id}).scalar_one_or_none()
+            if not admin_user:
+                raise ValueError("No authorized administrator found for tenant")
+
+            draft = work_orders_service.create_manual_draft(
                 s,
-                tenant_id=org_id,
-                actor_id=assistant_actor,
+                tenant=org_id,
                 machine_id=machine_id,
+                actor_id=admin_user,
                 title=title,
                 description=description,
-                priority=priority,
-                source="mcp_assistant",
-                tasks=[
-                    {"code": "AMM 72-00-00", "description": "Pre-Inspection Engine Lockout & Safety Tagging"},
-                    {"code": "AMM 72-31-00", "description": "Flexible Borescope Inspection of Compressor Blades"},
-                    {"code": "AMM 72-00-05", "description": "Post-Maintenance Ground Run Verification"}
-                ]
+                priority=priority
             )
             return {
                 "work_order_id": str(draft["id"]),

@@ -41,3 +41,4 @@ def test_technician_shift_roster_and_qualifications():
     tech_id = roster[0]["technician_id"]
     toggled = shifts.update_technician_duty(tenant_id, tech_id, False)
     assert toggled["is_on_duty"] is False
+

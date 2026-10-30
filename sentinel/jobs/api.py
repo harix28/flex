@@ -1,7 +1,7 @@
 """REST API endpoints for tenant-scoped asynchronous background jobs."""
 from contextlib import contextmanager
 from uuid import UUID, uuid4
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Body
 from sqlalchemy import text
 from sentinel.auth.context import AuthContext
 from sentinel.jobs.fleet import enqueue_fleet
@@ -19,15 +19,19 @@ def jobs_router(database, settings, predictor=None) -> APIRouter:
             yield s, actor
 
     @router.post('/fleet-score')
-    def submit_fleet_scoring_job(organization_id: UUID, request: Request):
+    def submit_fleet_scoring_job(organization_id: UUID, request: Request, payload: dict | None = Body(default=None)):
         """Submits an asynchronous fleet-wide scoring job to the PostgreSQL outbox queue."""
         if predictor is None:
             raise HTTPException(503, 'predictor_unavailable')
 
         source_event_id = f"fleet-score-{uuid4().hex[:12]}"
+        machine_ids = None
+        if payload and 'machine_ids' in payload:
+            machine_ids = payload['machine_ids']
+
         with scoped_tenant(request, organization_id, 'predictions.create') as (s, actor):
             try:
-                job_id = enqueue_fleet(s, organization_id, actor['id'], source_event_id, predictor)
+                job_id = enqueue_fleet(s, organization_id, actor['user_id'], source_event_id, predictor, machine_ids=machine_ids)
                 return {
                     'job_id': str(job_id),
                     'source_event_id': source_event_id,
@@ -95,3 +99,4 @@ def jobs_router(database, settings, predictor=None) -> APIRouter:
             }
 
     return router
+

@@ -1,5 +1,10 @@
 # Meridian Sentinel — Predictive Maintenance & RUL Platform
 
+**AI/developer handoff:** [Start here](docs/AI_HANDOFF/00_READ_FIRST.md) ·
+[Complete single-file context](MERIDIAN_SENTINEL_AI_CONTEXT.md) ·
+[Current gaps and contradictions](docs/AI_HANDOFF/03_CURRENT_GAPS_AND_CONTRADICTIONS.md).
+This snapshot distinguishes current code, historical reports, incomplete prototypes and planned work.
+
 ## Offline all-subset training — 2026-10-30
 
 Completed strict data validation, training-engine EDA, causal feature engineering,

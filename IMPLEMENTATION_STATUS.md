@@ -1,3 +1,47 @@
+## Full Enterprise Architecture Delivery & Demonstration — 2026-10-30
+
+All 9 enterprise roadmap modules are implemented, integrated into the running FastAPI backend and React frontend, and verified end-to-end via `scripts/demo_full_architecture.py` and unit/integration test suites:
+
+1. **Lifetime-Stage Classification & UI Card**: `sentinel/classification.py` and React `LifetimeStageCard` (`apps/web/src/pages/MachineDetailPage.tsx`).
+2. **Audit Dossier PDF Export**: FAA/EASA-compliant investigation dossiers with vector trend charts, contiguity checks, and AMM 72-00 task checklists in `sentinel/audit/`.
+3. **Model Context Protocol (MCP) Server**: Stdio JSON-RPC server with tenant isolation, `list_machines`, `get_sensor_trends`, `get_prediction_evidence`, and draft work order creation with human approval gates.
+4. **Durable Webhook Notifications**: HMAC-SHA256 signature verification, 15-minute anti-fatigue deduplication window, and PostgreSQL delivery audit log in `sentinel/notifications/`.
+5. **Background Jobs & Outbox Queue**: PostgreSQL `FOR UPDATE SKIP LOCKED` worker queue, fleet scoring enqueuer, and status API in `sentinel/jobs/` (Alembic `0008_outbox`, `0009_fleet_jobs`).
+6. **Maintenance Planning & Logistics**: Warehouse spare parts inventory with bin locations, technician shift rosters, and work order readiness checks in `sentinel/planning/`.
+7. **Live Edge Integrations & CMMS Sync**: MQTT Sparkplug B / OPC-UA edge gateway normalizer and SAP PM / IBM Maximo export adapters enforcing human approval gates in `sentinel/integrations/`.
+8. **Enterprise Security**: OIDC/SAML PKCE SSO integration, distributed sliding-window rate limiter, and PostgreSQL Row-Level Security (`0010_rls`) in `sentinel/auth/`.
+9. **Automated MLOps Pipeline**: Candidate promotion evaluation gates with non-regression constraints and shadow model divergence tracking in `sentinel/mlops/`.
+
+Verification:
+- `scripts/demo_full_architecture.py`: 10/10 steps passed cleanly against live local backend and PostgreSQL.
+- Backend tests: 14 new integration tests (`tests/test_enterprise_security.py`, `tests/test_notifications.py`, `tests/test_planning.py`, `tests/test_integrations.py`, `tests/test_mlops_pipeline.py`, `tests/test_mcp_server.py`) passed; foundation contracts verified.
+- Frontend tests: 31/31 unit tests passed (`vitest`).
+
+## Background fleet scoring — 2026-10-30
+
+Migration `0009_fleet_jobs` extends the durable worker with operator-enqueued fleet
+scoring and stored result summaries. Runs freeze at most 100 active machines,
+observation cutoffs/digests, requester and configured primary model hash. Worker
+execution rechecks tenant membership and permissions, persists predictions and audit
+records atomically, and preserves explicit unavailable results. CLI commands:
+`python -m sentinel.jobs enqueue-fleet` and `python -m sentinel.jobs status`.
+No HTTP/UI queue submission, recurring scheduler, ingestion worker, notification
+adapter, application database migration or deployed daemon is included.
+See [runbook](docs/BACKGROUND_JOBS.md). Targeted validation: 35 tests passed;
+see [fleet validation evidence](reports/FLEET_JOBS_VALIDATION_20261030.md).
+
+## Background queue foundation — 2026-10-30
+
+Migration `0008_outbox` adds tenant-scoped deduplicated jobs, SKIP LOCKED claims,
+lease fencing, bounded retries and a dead-letter view. `python -m sentinel.jobs`
+provides an operator producer and standalone worker for existing FD001 drift
+evaluation. Batch scoring, asynchronous ingestion, outbound notifications, public
+submission endpoints and periodic scheduling remain planned. No operational
+maintenance or model approval gates are changed. See [runbook](docs/BACKGROUND_JOBS.md).
+Targeted validation: 27 tests passed against disposable PostgreSQL databases;
+see [evidence](reports/BACKGROUND_JOBS_VALIDATION_20261030.md). Application database
+rollout has not been performed.
+
 ## All-subset offline training update — 2026-10-30
 
 `sentinel/all_subsets_training.py` now performs strict validation, training-engine

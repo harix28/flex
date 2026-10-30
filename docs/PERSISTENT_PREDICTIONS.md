@@ -8,8 +8,8 @@ Phase 6 connects stored immutable NASA replay observations ([REPLAY_INGESTION.md
 to Meridian Sentinel's existing verified ML model (`runs/fd001-v1`), persisting reproducible prediction
 provenance and exposing maintenance priority APIs.
 
-Predictions are requested explicitly via API; they are never computed implicitly on ingestion or via
-hidden background workers.
+Predictions are requested explicitly via API or the operator-enqueued
+[fleet scoring worker](BACKGROUND_JOBS.md). Ingestion does not implicitly trigger scoring.
 
 ```
 +---------------------+     +--------------------+     +---------------------+

@@ -1,0 +1,14 @@
+{
+  "included_source_files": 390,
+  "runtime_api_operations": 84,
+  "runtime_component_schemas": 29,
+  "test_definitions_indexed": 242,
+  "source_files_changed": [],
+  "export_hash_mismatches": [],
+  "local_artifacts_inventoried": 171,
+  "recognized_secret_scan_findings": [],
+  "openapi_generation_error": null,
+  "combined_document_words": 58479,
+  "combined_document_bytes": 730124,
+  "note": "Documentation/index validation, not an application test run; source snapshot intentionally excludes live data and secrets."
+}

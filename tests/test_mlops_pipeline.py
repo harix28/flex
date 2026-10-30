@@ -56,3 +56,4 @@ def test_shadow_serving_divergence_metrics():
     assert metrics["total_comparisons"] == 3
     assert metrics["mean_absolute_divergence_cycles"] == 1.50
     assert metrics["max_divergence_cycles"] == 2.00
+

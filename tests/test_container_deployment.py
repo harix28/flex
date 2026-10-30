@@ -85,7 +85,7 @@ def test_runtime_role_cannot_ddl_or_change_revision(db):
         container_setup.migrate_and_grant(url.render_as_string(hide_password=False), password, role)
         runtime = create_engine(url.set(username=role, password=password), hide_parameters=True)
         with runtime.begin() as connection:
-            assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar() == '0007_mlops'
+            assert connection.execute(text('SELECT version_num FROM alembic_version')).scalar() == '0009_fleet_jobs'
             connection.execute(text("INSERT INTO tenants(name) VALUES ('runtime permission test')"))
         for statement in ('CREATE TABLE forbidden_table(id int)', 'DELETE FROM alembic_version'):
             with pytest.raises(DBAPIError):

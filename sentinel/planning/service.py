@@ -63,3 +63,4 @@ def evaluate_work_order_readiness(session, tenant_id: UUID, work_order_id: UUID)
         "assigned_technician": assigned_tech,
         "recommended_on_duty_technicians": on_duty_qualified
     }
+

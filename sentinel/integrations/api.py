@@ -1,6 +1,6 @@
 """REST API endpoints for edge IoT gateways and enterprise CMMS synchronization."""
 from contextlib import contextmanager
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import Literal
 from fastapi import APIRouter, HTTPException, Request, Query
 from sqlalchemy import text
@@ -9,6 +9,7 @@ from sentinel.integrations.iot_gateway import normalize_edge_telemetry
 from sentinel.integrations.cmms import export_to_sap_pm, export_to_maximo
 from sentinel.registry import service as registry_service
 from sentinel.ingestion import service as ingestion_service
+from sentinel.ingestion.schemas import Batch, Source, Observation
 from sentinel.work_orders import service as work_orders_service
 
 
@@ -55,10 +56,10 @@ def integrations_router(database, settings) -> APIRouter:
         if not asset_code:
             raise HTTPException(422, "Missing required 'asset_code' in telemetry frame")
 
-        with scoped_tenant(request, organization_id, 'replay.create') as (s, actor):
+        with scoped_tenant(request, organization_id, 'replay.ingest') as (s, actor):
             # Resolve machine by asset_code in tenant
             machine_row = s.execute(text("""
-                SELECT id FROM machines WHERE tenant_id = :t AND asset_code = :c AND status = 'active'
+                SELECT id FROM machines WHERE tenant_id = :t AND asset_code = :c AND lifecycle_status = 'active'
             """), {'t': organization_id, 'c': asset_code}).mappings().one_or_none()
 
             if not machine_row:
@@ -69,20 +70,38 @@ def integrations_router(database, settings) -> APIRouter:
             if not stream:
                 raise HTTPException(409, "observations_stream_not_initialized")
 
-            # Insert observation idempotently
-            s.execute(text("""
-                INSERT INTO replay_observations (tenant_id, machine_id, stream_id, cycle, settings, sensors)
-                VALUES (:t, :m, :s, :cycle, :settings, :sensors)
-                ON CONFLICT (tenant_id, machine_id, stream_id, cycle) DO UPDATE
-                SET settings = EXCLUDED.settings, sensors = EXCLUDED.sensors
-            """), {
-                't': organization_id,
-                'm': machine_id,
-                's': stream['id'],
-                'cycle': norm['cycle'],
-                'settings': norm['settings'],
-                'sensors': norm['sensors']
-            })
+            batch_payload = Batch(
+                source=Source(
+                    dataset=stream['dataset'],
+                    subset=stream['subset'],
+                    partition=stream['partition'],
+                    engine_id=stream['engine_id'],
+                    file_sha256=stream['file_sha256']
+                ),
+                observations=[
+                    Observation(
+                        cycle=norm['cycle'],
+                        settings=norm['settings'],
+                        sensors=norm['sensors']
+                    )
+                ]
+            )
+            key = f"edge-{norm['gateway_id']}-{norm['cycle']}-{uuid4().hex[:8]}"
+            try:
+                raw_req_id = getattr(request.state, 'request_id', str(uuid4()))
+                req_id = UUID(raw_req_id)
+            except Exception:
+                req_id = uuid4()
+
+            result = ingestion_service.ingest(
+                s,
+                tenant=organization_id,
+                machine=machine_id,
+                actor=actor['user_id'],
+                request_id=req_id,
+                payload=batch_payload,
+                key=key
+            )
 
             return {
                 'status': 'ingested',
@@ -90,7 +109,8 @@ def integrations_router(database, settings) -> APIRouter:
                 'machine_id': str(machine_id),
                 'cycle': norm['cycle'],
                 'gateway_id': norm['gateway_id'],
-                'protocol': norm['protocol']
+                'protocol': norm['protocol'],
+                'batch_id': str(result['batch']['id'])
             }
 
     @router.post('/cmms/export/{work_order_id}')
@@ -105,9 +125,8 @@ def integrations_router(database, settings) -> APIRouter:
         Enforces human-in-the-loop approval policy: rejected if in 'draft' status.
         """
         with scoped_tenant(request, organization_id, 'work_orders.read') as (s, actor):
-            wo = work_orders_service.get_work_order(s, organization_id, work_order_id)
-            if not wo:
-                raise HTTPException(404, 'work_order_not_found')
+            raw = work_orders_service.get_work_order_raw(s, organization_id, work_order_id)
+            wo = work_orders_service.build_work_order_view(s, raw)
 
             try:
                 if target == 'sap_pm':

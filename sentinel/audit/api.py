@@ -31,13 +31,13 @@ def audit_router(database, settings) -> APIRouter:
         """Generates a downloadable, cryptographic PDF audit dossier for an engine asset."""
         with scoped_tenant(request, organization_id, 'predictions.read') as (s, actor):
             # 1. Fetch Machine
-            machine = registry_service.get_machine(s, organization_id, machine_id)
-            if not machine:
-                raise HTTPException(404, 'machine_not_found')
+            reg = registry_service.Registry(s, organization_id, actor['user_id'], getattr(request.state, 'request_id', ''))
+            machine_row = reg.get('machines', machine_id)
+            machine = registry_service.machine_view(machine_row)
 
             # 2. Fetch Data Quality
             try:
-                dq = ingestion_service.get_data_quality(s, organization_id, machine_id)
+                dq = ingestion_service.quality(s, organization_id, machine_id, 1, None)
             except Exception:
                 dq = {
                     'first_cycle': None,

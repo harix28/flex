@@ -117,3 +117,4 @@ def find_parts_for_tasks(tenant_id: UUID, task_codes: list[str]) -> list[dict]:
                 "status": "AVAILABLE" if in_stock else "SHORTAGE"
             })
     return requirements
+

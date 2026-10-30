@@ -109,3 +109,4 @@ def export_to_maximo(work_order: dict) -> MaximoWorkOrder:
         "EXTERNAL_SYSTEM": "MERIDIAN_SENTINEL",
         "EXPORTED_AT": datetime.now(timezone.utc).isoformat()
     }
+

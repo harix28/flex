@@ -94,3 +94,4 @@ def test_cmms_export_policy_enforcement():
     assert maximo["STATUS"] == "WAPPR"
     assert maximo["WORKTYPE"] == "CM"
     assert len(maximo["TASKS"]) == 1
+

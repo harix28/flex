@@ -1,5 +1,10 @@
 # Executable migrations
 
+Current head: `0009_fleet_jobs`. Adds fleet job support and persisted results to the
+durable queue introduced in `0008_outbox`. Downgrade refuses while fleet jobs exist.
+See [background job operations and rollback](../../docs/BACKGROUND_JOBS.md).
+The revision notes below describe historical rollout stages.
+
 See [database operations](../README.md) for setup, upgrade, destructive downgrade
 warnings and test isolation. Initial revision: `0001_registry`; immutable SQL lives
 beside its Python revision. Migrations run transactionally and are operator-invoked.

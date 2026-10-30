@@ -76,3 +76,4 @@ def get_available_technicians_for_task(tenant_id: UUID, task_code: str) -> list[
         if t["is_on_duty"] and required_qual in t["qualifications"]
     ]
     return qualified
+

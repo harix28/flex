@@ -80,3 +80,4 @@ def evaluate_candidate_gate(
 def list_candidate_evaluations() -> list[GateResult]:
     """Returns history of evaluated candidate models and gate decisions."""
     return list(reversed(_CANDIDATE_RUNS))
+

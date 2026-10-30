@@ -103,3 +103,4 @@ def normalize_edge_telemetry(payload: dict) -> NormalizedFrame:
         "protocol": protocol,
         "normalized_at": datetime.now(timezone.utc).isoformat()
     }
+

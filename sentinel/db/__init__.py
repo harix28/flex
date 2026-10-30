@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sentinel.config import validate_database_url
 
-REVISION = '0007_mlops'
+REVISION = '0010_rls'
 
 class Database:
     def __init__(self, url):

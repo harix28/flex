@@ -40,3 +40,4 @@ def downgrade():
     for tbl in TABLES:
         op.execute(f"DROP POLICY IF EXISTS tenant_isolation_policy ON {tbl}")
         op.execute(f"ALTER TABLE {tbl} DISABLE ROW LEVEL SECURITY")
+

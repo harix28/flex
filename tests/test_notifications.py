@@ -80,3 +80,4 @@ def test_alert_fatigue_deduplication():
         priority="urgent"
     )
     assert second["status"] == "suppressed_duplicate"
+

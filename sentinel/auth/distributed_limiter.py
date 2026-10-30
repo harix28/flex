@@ -72,3 +72,4 @@ class DistributedRateLimiter:
 login_rate_limiter = DistributedRateLimiter(limit=5, window_seconds=60)      # 5 attempts per minute
 api_rate_limiter = DistributedRateLimiter(limit=120, window_seconds=60)     # 120 calls per minute
 telemetry_rate_limiter = DistributedRateLimiter(limit=600, window_seconds=60) # 600 frames per minute
+

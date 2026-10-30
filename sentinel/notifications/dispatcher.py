@@ -152,3 +152,4 @@ def dispatch_event(
 def get_dispatch_history(tenant_id: UUID) -> list[dict]:
     """Retrieves recent notification delivery history for a tenant."""
     return list(reversed(_DISPATCH_HISTORY.get(str(tenant_id), [])))
+

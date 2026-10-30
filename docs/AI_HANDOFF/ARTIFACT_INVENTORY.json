@@ -1,0 +1,1028 @@
+[
+  {
+    "path": "runs/all-subsets-20261030-v1/cleaning_eda.json",
+    "bytes": 5200,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/FD001_test_predictions.csv",
+    "bytes": 1025479,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/FD002_test_predictions.csv",
+    "bytes": 2671988,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/FD003_test_predictions.csv",
+    "bytes": 1298078,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/FD004_test_predictions.csv",
+    "bytes": 3239300,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/feature_selection.json",
+    "bytes": 14446,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/forest.json",
+    "bytes": 1265,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/forest.npz",
+    "bytes": 21343234,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/COMBINED/validation.json",
+    "bytes": 5442,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/config.json",
+    "bytes": 12432,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD001_correlations.csv",
+    "bytes": 6301,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD001_eda.png",
+    "bytes": 77303,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD001_statistics.csv",
+    "bytes": 2582,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD002_correlations.csv",
+    "bytes": 11220,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD002_eda.png",
+    "bytes": 100584,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD002_statistics.csv",
+    "bytes": 2629,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD003_correlations.csv",
+    "bytes": 6950,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD003_eda.png",
+    "bytes": 77915,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD003_statistics.csv",
+    "bytes": 2567,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD004_correlations.csv",
+    "bytes": 11212,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD004_eda.png",
+    "bytes": 103035,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/eda/FD004_statistics.csv",
+    "bytes": 2669,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/FD001_test_predictions.csv",
+    "bytes": 1037661,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/feature_selection.json",
+    "bytes": 7732,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/forest.json",
+    "bytes": 1265,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/forest.npz",
+    "bytes": 5326800,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/rul_features.json",
+    "bytes": 613,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/rul_model.json",
+    "bytes": 1126268,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD001/validation.json",
+    "bytes": 6045,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/FD002_test_predictions.csv",
+    "bytes": 3083268,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/feature_selection.json",
+    "bytes": 9427,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/forest.json",
+    "bytes": 1265,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/forest.npz",
+    "bytes": 10817280,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/rul_features.json",
+    "bytes": 613,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/rul_model.json",
+    "bytes": 1150613,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD002/validation.json",
+    "bytes": 6061,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/FD003_test_predictions.csv",
+    "bytes": 1331154,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/feature_selection.json",
+    "bytes": 7815,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/forest.json",
+    "bytes": 1710,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/forest.npz",
+    "bytes": 4063409,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/rul_features.json",
+    "bytes": 613,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/rul_model.json",
+    "bytes": 1096197,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD003/validation.json",
+    "bytes": 6057,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/FD004_test_predictions.csv",
+    "bytes": 3882130,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/feature_selection.json",
+    "bytes": 9284,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/forest.json",
+    "bytes": 1265,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/forest.npz",
+    "bytes": 11704748,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/rul_features.json",
+    "bytes": 1089,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/rul_model.json",
+    "bytes": 1164668,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/FD004/validation.json",
+    "bytes": 6066,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/frozen_selections.json",
+    "bytes": 31799,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/manifest.json",
+    "bytes": 5233,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/results.json",
+    "bytes": 92825,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/all-subsets-20261030-v1/test_audit.json",
+    "bytes": 471,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-20261027-candidate/bundle.json",
+    "bytes": 2760,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-20261027-candidate/model.json",
+    "bytes": 312715,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-20261027-candidate/report.json",
+    "bytes": 4247,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-20261027-candidate/test_predictions.csv",
+    "bytes": 2331,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028/model.json",
+    "bytes": 355463,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028/protocol.json",
+    "bytes": 3220,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/all_test_predictions.csv",
+    "bytes": 1927,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/model.json",
+    "bytes": 355463,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/official_test_common.csv",
+    "bytes": 2887,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/protocol.json",
+    "bytes": 3220,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/results.json",
+    "bytes": 11946,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/reused_audit_common.csv",
+    "bytes": 25039,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/selection.json",
+    "bytes": 153,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-cap125-20261028-v2/validation_common.csv",
+    "bytes": 68856,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-v1/bundle.json",
+    "bytes": 2635,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-v1/model.json",
+    "bytes": 313008,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-v1/report.json",
+    "bytes": 4051,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd001-v1/test_predictions.csv",
+    "bytes": 2224,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd002-20261027-candidate/bundle.json",
+    "bytes": 2758,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd002-20261027-candidate/model.json",
+    "bytes": 5904,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd002-20261027-candidate/report.json",
+    "bytes": 6217,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd002-20261027-candidate/test_predictions.csv",
+    "bytes": 7936,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-20261027-candidate/bundle.json",
+    "bytes": 2760,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-20261027-candidate/model.json",
+    "bytes": 294039,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-20261027-candidate/report.json",
+    "bytes": 4237,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-20261027-candidate/test_predictions.csv",
+    "bytes": 2327,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/candidate_manifest.json",
+    "bytes": 242,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/feature_schema.json",
+    "bytes": 2402,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/metrics_test.json",
+    "bytes": 527,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/metrics_validation.json",
+    "bytes": 592,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/model.json",
+    "bytes": 294039,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/predictions_test.csv",
+    "bytes": 2313,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/predictions_validation.csv",
+    "bytes": 1896,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_a_xgb_baseline/preprocessing.json",
+    "bytes": 127,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/candidate_manifest.json",
+    "bytes": 439,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/feature_schema.json",
+    "bytes": 2986,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/metrics_test.json",
+    "bytes": 511,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/metrics_validation.json",
+    "bytes": 576,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/model.json",
+    "bytes": 877,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/predictions_test.csv",
+    "bytes": 3152,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/predictions_validation.csv",
+    "bytes": 2707,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_b_hgb_notebook/preprocessing.json",
+    "bytes": 1500,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/candidate_manifest.json",
+    "bytes": 253,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/feature_schema.json",
+    "bytes": 2995,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/metrics_test.json",
+    "bytes": 511,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/metrics_validation.json",
+    "bytes": 576,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/model.json",
+    "bytes": 302986,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/predictions_test.csv",
+    "bytes": 2310,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/predictions_validation.csv",
+    "bytes": 2059,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_c_xgb_notebook_features/preprocessing.json",
+    "bytes": 1500,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/candidate_manifest.json",
+    "bytes": 446,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/feature_schema.json",
+    "bytes": 2411,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/metrics_test.json",
+    "bytes": 509,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/metrics_validation.json",
+    "bytes": 608,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/model.json",
+    "bytes": 877,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/predictions_test.csv",
+    "bytes": 3195,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/predictions_validation.csv",
+    "bytes": 2695,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd003-experiment-20261029/candidate_d_hgb_sentinel_features/preprocessing.json",
+    "bytes": 127,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd004-20261027-candidate/bundle.json",
+    "bytes": 2758,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd004-20261027-candidate/model.json",
+    "bytes": 5898,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd004-20261027-candidate/report.json",
+    "bytes": 6134,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/fd004-20261027-candidate/test_predictions.csv",
+    "bytes": 7622,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/audit_predictions.csv",
+    "bytes": 29659,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/experiment.json",
+    "bytes": 2763,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/interval.json",
+    "bytes": 825,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/model.json",
+    "bytes": 311873,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/official_test_common_predictions.csv",
+    "bytes": 3372,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/official_test_point_predictions.csv",
+    "bytes": 2049,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/results.json",
+    "bytes": 7516,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/selection.json",
+    "bytes": 7828,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/transform.json",
+    "bytes": 680,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD001/validation_predictions.csv",
+    "bytes": 46868,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/audit_predictions.csv",
+    "bytes": 82143,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/experiment.json",
+    "bytes": 2763,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/interval.json",
+    "bytes": 1438,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/model.json",
+    "bytes": 313782,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/official_test_common_predictions.csv",
+    "bytes": 8659,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/official_test_point_predictions.csv",
+    "bytes": 5170,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/results.json",
+    "bytes": 11011,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/selection.json",
+    "bytes": 14763,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/transform.json",
+    "bytes": 9011,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD002/validation_predictions.csv",
+    "bytes": 124381,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/audit_predictions.csv",
+    "bytes": 48226,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/experiment.json",
+    "bytes": 2763,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/interval.json",
+    "bytes": 821,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/model.json",
+    "bytes": 310909,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/official_test_common_predictions.csv",
+    "bytes": 3578,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/official_test_point_predictions.csv",
+    "bytes": 2183,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/results.json",
+    "bytes": 7464,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/selection.json",
+    "bytes": 7841,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/transform.json",
+    "bytes": 680,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD003/validation_predictions.csv",
+    "bytes": 58298,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/audit_predictions.csv",
+    "bytes": 96284,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/experiment.json",
+    "bytes": 2763,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/interval.json",
+    "bytes": 1401,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/model.json",
+    "bytes": 314877,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/official_test_common_predictions.csv",
+    "bytes": 8510,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/official_test_point_predictions.csv",
+    "bytes": 5247,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/results.json",
+    "bytes": 10604,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/selection.json",
+    "bytes": 14745,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/transform.json",
+    "bytes": 8965,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/FD004/validation_predictions.csv",
+    "bytes": 138237,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/protocol.json",
+    "bytes": 1651,
+    "content_included": false,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "runs/rul-improvement-20261027/results.json",
+    "bytes": 45753,
+    "content_included": true,
+    "role": "model/experiment artifact"
+  },
+  {
+    "path": "data/raw/readme.txt",
+    "bytes": 2442,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/RUL_FD001.txt",
+    "bytes": 429,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/RUL_FD002.txt",
+    "bytes": 1110,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/RUL_FD003.txt",
+    "bytes": 428,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/RUL_FD004.txt",
+    "bytes": 1084,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/test_FD001.txt",
+    "bytes": 2228855,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/test_FD002.txt",
+    "bytes": 5734587,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/test_FD003.txt",
+    "bytes": 2826651,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/test_FD004.txt",
+    "bytes": 6957759,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/train_FD001.txt",
+    "bytes": 3515356,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/train_FD002.txt",
+    "bytes": 9082480,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/train_FD003.txt",
+    "bytes": 4213862,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  },
+  {
+    "path": "data/raw/train_FD004.txt",
+    "bytes": 10350705,
+    "content_included": false,
+    "role": "raw dataset prerequisite"
+  }
+]
