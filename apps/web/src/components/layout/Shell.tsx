@@ -24,6 +24,7 @@ interface ShellProps {
 export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children }) => {
   const { user, activeTenant, logout, canManageRegistry, canManageMembers } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarHovered, setSidebarHovered] = useState(false);
 
   const navItems = [
     { id: 'overview' as NavigationPage, label: 'Overview', icon: LayoutDashboard },
@@ -168,22 +169,42 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
           overflow: 'hidden',
         }}
       >
-        {/* Navigation Sidebar (Fixed, Non-scrolling) */}
+        {/* Navigation Sidebar (Collapsible with Expand-on-Hover) */}
         <aside
           className={`portal-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}
+          onMouseEnter={() => setSidebarHovered(true)}
+          onMouseLeave={() => setSidebarHovered(false)}
           style={{
-            width: '240px',
+            width: sidebarHovered ? '240px' : '68px',
             backgroundColor: 'var(--bg-surface)',
             borderRight: '1px solid var(--border-subtle)',
-            padding: '1.25rem 0.75rem',
+            padding: '1.25rem 0.5rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.35rem',
             flexShrink: 0,
             overflowY: 'auto',
+            overflowX: 'hidden',
+            transition: 'width 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+            zIndex: 30,
+            boxShadow: sidebarHovered ? 'var(--shadow-lg)' : 'none',
           }}
         >
-          <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0 0.75rem 0.5rem', letterSpacing: '0.05em' }}>
+          <div
+            style={{
+              fontSize: '0.7rem',
+              fontWeight: 600,
+              color: 'var(--text-muted)',
+              textTransform: 'uppercase',
+              padding: '0 0.5rem 0.5rem',
+              letterSpacing: '0.05em',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              opacity: sidebarHovered ? 1 : 0,
+              transition: 'opacity 150ms ease',
+              height: '24px',
+            }}
+          >
             Navigation
           </div>
           {navItems.map((item) => {
@@ -200,11 +221,12 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
                   onNavigate(item.id);
                   setMobileMenuOpen(false);
                 }}
+                title={!sidebarHovered ? item.label : undefined}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.75rem',
-                  padding: '0.625rem 0.75rem',
+                  gap: '0.85rem',
+                  padding: sidebarHovered ? '0.625rem 0.75rem' : '0.625rem 0.85rem',
                   fontSize: '0.875rem',
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? 'var(--primary)' : 'var(--text-secondary)',
@@ -215,10 +237,21 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all var(--transition-fast)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
                 }}
               >
-                <Icon size={18} style={{ color: isActive ? 'var(--primary)' : 'var(--text-muted)' }} />
-                <span>{item.label}</span>
+                <Icon size={20} style={{ color: isActive ? 'var(--primary)' : 'var(--text-muted)', flexShrink: 0 }} />
+                <span
+                  style={{
+                    opacity: sidebarHovered ? 1 : 0,
+                    transform: sidebarHovered ? 'translateX(0)' : 'translateX(-8px)',
+                    transition: 'opacity 200ms ease, transform 200ms ease',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {item.label}
+                </span>
               </button>
             );
           })}
