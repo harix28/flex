@@ -44,11 +44,13 @@ services:
       SENTINEL_AUTH_LOCALHOST: "false"
       SENTINEL_AUTH_ORIGINS: ${SENTINEL_AUTH_ORIGINS:?Set the exact public HTTPS origin}
       SENTINEL_MODEL_DIR: /app/models/fd001-v1
+      SENTINEL_CLASSIFIER_DIR: /app/models/combined-rf
       SENTINEL_BUNDLE_SHA256: 06d46a9c4f5f71aeb220ade135e52e713a0bd41f362e7caf00eda743442e7cfd
       # Backend has no published port; only the private gateway may forward headers.
       FORWARDED_ALLOW_IPS: "*"
     volumes:
       - ./runs/fd001-v1:/app/models/fd001-v1:ro
+      - ./runs/all-subsets-20261030-v1/COMBINED:/app/models/combined-rf:ro
     depends_on:
       migrate:
         condition: service_completed_successfully

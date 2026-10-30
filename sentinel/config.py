@@ -62,6 +62,7 @@ class Settings:
     login_window: int = 300
     login_global_limit: int = 100
     container_mode: bool = False
+    classifier_dir: Path | None = None
 
 
     def __post_init__(self):
@@ -145,7 +146,8 @@ def load_settings(env_file=None, environ=None, overrides=None):
                     login_limit=env_int(values, 'SENTINEL_LOGIN_LIMIT', 10),
                     login_window=env_int(values, 'SENTINEL_LOGIN_WINDOW', 300),
                     login_global_limit=env_int(values, 'SENTINEL_LOGIN_GLOBAL_LIMIT', 100),
-                    container_mode=env_bool(values, 'SENTINEL_CONTAINER_MODE'))
+                    container_mode=env_bool(values, 'SENTINEL_CONTAINER_MODE'),
+                    classifier_dir=Path(values['SENTINEL_CLASSIFIER_DIR']) if values.get('SENTINEL_CLASSIFIER_DIR') else None)
 
 
 def validate_database_url(value):

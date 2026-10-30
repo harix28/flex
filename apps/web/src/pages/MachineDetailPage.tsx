@@ -12,6 +12,7 @@ import {
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { SensorTrendChart } from '../components/charts/SensorTrendChart';
 import { PredictionCard } from '../components/predictions/PredictionCard';
+import { LifetimeStageCard } from '../components/predictions/LifetimeStageCard';
 import { RunPredictionModal } from '../components/predictions/RunPredictionModal';
 import { WorkOrderCreateModal } from '../components/work-orders/WorkOrderCreateModal';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
@@ -144,6 +145,9 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
       />
 
       {/* Machine Header */}
+      {activeTenant && machine.data_source === 'nasa_replay' && (
+        <LifetimeStageCard tenantId={activeTenant.id} machineId={machine.id} />
+      )}
       <div
         className="card card-elevated"
         style={{

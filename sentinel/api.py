@@ -7,6 +7,7 @@ from .auth.api import auth_router
 from .registry.api import registry_router
 from .ingestion.api import ingestion_router
 from .predictions.api import predictions_router
+from .classification import LifetimeClassifier, classification_router
 from .work_orders.api import work_orders_router
 from .mlops.api import mlops_router
 from .mlops.deployment import record_activation
@@ -67,6 +68,12 @@ def create_app(predictor=None, api_key=None, *, settings=None):
                   docs_url='/docs',redoc_url=None)
 
     auth_settings = settings if settings is not None else Settings(api_key=api_key)
+    classifier = None
+    if auth_settings.classifier_dir is not None:
+        try:
+            classifier = LifetimeClassifier(auth_settings.classifier_dir)
+        except Exception:
+            raise ConfigurationError('Classifier rejected: check trusted artifact hashes and file access') from None
     if auth_settings.auth_origins:
         app.add_middleware(CORSMiddleware, allow_origins=list(auth_settings.auth_origins),
             allow_credentials=True, allow_methods=['GET','POST','PATCH','DELETE'],
@@ -75,6 +82,7 @@ def create_app(predictor=None, api_key=None, *, settings=None):
     app.include_router(auth_router(database, auth_settings))
     app.include_router(registry_router(database, auth_settings))
     app.include_router(ingestion_router(database, auth_settings))
+    app.include_router(classification_router(database, auth_settings, classifier))
     app.include_router(predictions_router(database, auth_settings, predictor))
     app.include_router(work_orders_router(database, auth_settings))
     app.include_router(mlops_router(database, auth_settings, predictor))
@@ -111,7 +119,8 @@ def create_app(predictor=None, api_key=None, *, settings=None):
             raise HTTPException(503, 'model_not_loaded')
         if database is None or not database.ready():
             raise HTTPException(503, 'database_unavailable')
-        return {'status': 'ready', 'model_loaded': True, 'database_ready': True}
+        return {'status': 'ready', 'model_loaded': True, 'database_ready': True,
+                'classifier_loaded': classifier is not None}
 
     @app.get('/api/v1/experimental/model',dependencies=[Depends(authorized)])
     def model_report(request: Request):

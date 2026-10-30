@@ -1,0 +1,201 @@
+{
+  "FD001": {
+    "source_training_rows": 20631,
+    "source_training_engines": 100,
+    "rows_removed": 0,
+    "training_eda": {
+      "rows": 14407,
+      "engines": 70,
+      "missing": 0,
+      "duplicate_engine_cycles": 0,
+      "lifetime_min": 128,
+      "lifetime_max": 362,
+      "class_counts": [
+        8618,
+        2883,
+        2906
+      ],
+      "constant_channels": [
+        "setting_3",
+        "sensor_01",
+        "sensor_05",
+        "sensor_10",
+        "sensor_16",
+        "sensor_18",
+        "sensor_19"
+      ],
+      "iqr_outlier_counts_retained": {
+        "setting_1": 78,
+        "setting_2": 0,
+        "setting_3": 0,
+        "sensor_01": 0,
+        "sensor_02": 84,
+        "sensor_03": 123,
+        "sensor_04": 88,
+        "sensor_05": 0,
+        "sensor_06": 263,
+        "sensor_07": 83,
+        "sensor_08": 229,
+        "sensor_09": 1242,
+        "sensor_10": 0,
+        "sensor_11": 78,
+        "sensor_12": 98,
+        "sensor_13": 223,
+        "sensor_14": 1084,
+        "sensor_15": 86,
+        "sensor_16": 0,
+        "sensor_17": 68,
+        "sensor_18": 0,
+        "sensor_19": 0,
+        "sensor_20": 118,
+        "sensor_21": 94
+      },
+      "cleaning": "strict finite numeric/schema/duplicate/gap checks; sorted by engine/cycle; no imputation or outlier deletion"
+    }
+  },
+  "FD002": {
+    "source_training_rows": 53759,
+    "source_training_engines": 260,
+    "rows_removed": 0,
+    "training_eda": {
+      "rows": 37523,
+      "engines": 182,
+      "missing": 0,
+      "duplicate_engine_cycles": 0,
+      "lifetime_min": 129,
+      "lifetime_max": 378,
+      "class_counts": [
+        22439,
+        7511,
+        7573
+      ],
+      "constant_channels": [],
+      "iqr_outlier_counts_retained": {
+        "setting_1": 0,
+        "setting_2": 0,
+        "setting_3": 5618,
+        "sensor_01": 0,
+        "sensor_02": 0,
+        "sensor_03": 0,
+        "sensor_04": 0,
+        "sensor_05": 0,
+        "sensor_06": 0,
+        "sensor_07": 0,
+        "sensor_08": 5618,
+        "sensor_09": 0,
+        "sensor_10": 0,
+        "sensor_11": 2269,
+        "sensor_12": 0,
+        "sensor_13": 6771,
+        "sensor_14": 5647,
+        "sensor_15": 5618,
+        "sensor_16": 0,
+        "sensor_17": 0,
+        "sensor_18": 5618,
+        "sensor_19": 5618,
+        "sensor_20": 0,
+        "sensor_21": 0
+      },
+      "cleaning": "strict finite numeric/schema/duplicate/gap checks; sorted by engine/cycle; no imputation or outlier deletion"
+    }
+  },
+  "FD003": {
+    "source_training_rows": 24720,
+    "source_training_engines": 100,
+    "rows_removed": 0,
+    "training_eda": {
+      "rows": 17406,
+      "engines": 70,
+      "missing": 0,
+      "duplicate_engine_cycles": 0,
+      "lifetime_min": 147,
+      "lifetime_max": 494,
+      "class_counts": [
+        10417,
+        3479,
+        3510
+      ],
+      "constant_channels": [
+        "setting_3",
+        "sensor_01",
+        "sensor_05",
+        "sensor_16",
+        "sensor_18",
+        "sensor_19"
+      ],
+      "iqr_outlier_counts_retained": {
+        "setting_1": 145,
+        "setting_2": 0,
+        "setting_3": 0,
+        "sensor_01": 0,
+        "sensor_02": 136,
+        "sensor_03": 134,
+        "sensor_04": 123,
+        "sensor_05": 0,
+        "sensor_06": 151,
+        "sensor_07": 1480,
+        "sensor_08": 1240,
+        "sensor_09": 1252,
+        "sensor_10": 2215,
+        "sensor_11": 135,
+        "sensor_12": 1539,
+        "sensor_13": 1329,
+        "sensor_14": 1311,
+        "sensor_15": 245,
+        "sensor_16": 0,
+        "sensor_17": 9,
+        "sensor_18": 0,
+        "sensor_19": 0,
+        "sensor_20": 205,
+        "sensor_21": 250
+      },
+      "cleaning": "strict finite numeric/schema/duplicate/gap checks; sorted by engine/cycle; no imputation or outlier deletion"
+    }
+  },
+  "FD004": {
+    "source_training_rows": 61249,
+    "source_training_engines": 249,
+    "rows_removed": 0,
+    "training_eda": {
+      "rows": 43711,
+      "engines": 174,
+      "missing": 0,
+      "duplicate_engine_cycles": 0,
+      "lifetime_min": 128,
+      "lifetime_max": 543,
+      "class_counts": [
+        26160,
+        8740,
+        8811
+      ],
+      "constant_channels": [],
+      "iqr_outlier_counts_retained": {
+        "setting_1": 0,
+        "setting_2": 0,
+        "setting_3": 6532,
+        "sensor_01": 0,
+        "sensor_02": 0,
+        "sensor_03": 0,
+        "sensor_04": 0,
+        "sensor_05": 0,
+        "sensor_06": 0,
+        "sensor_07": 0,
+        "sensor_08": 6532,
+        "sensor_09": 0,
+        "sensor_10": 0,
+        "sensor_11": 2088,
+        "sensor_12": 0,
+        "sensor_13": 8129,
+        "sensor_14": 6540,
+        "sensor_15": 6532,
+        "sensor_16": 0,
+        "sensor_17": 0,
+        "sensor_18": 6532,
+        "sensor_19": 6532,
+        "sensor_20": 0,
+        "sensor_21": 0
+      },
+      "cleaning": "strict finite numeric/schema/duplicate/gap checks; sorted by engine/cycle; no imputation or outlier deletion"
+    }
+  }
+}

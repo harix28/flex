@@ -33,3 +33,7 @@ apps/web/vite.config.d.ts
 archives/
 resources/video/
 resources/interactive/Meridian_Sentinel_Interactive.html
+
+# User-requested export archives and standalone packages
+*.zip
+ml_package/

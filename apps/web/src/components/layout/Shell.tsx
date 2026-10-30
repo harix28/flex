@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { systemApi } from '../../services/api';
 import {
   LayoutDashboard,
   Cpu,
@@ -8,12 +7,10 @@ import {
   Layers,
   Users,
   LogOut,
-  Building,
   Menu,
   X,
   Activity,
   ShieldCheck,
-  AlertTriangle,
 } from 'lucide-react';
 
 export type NavigationPage = 'overview' | 'machines' | 'machine-detail' | 'work-orders' | 'work-order-detail' | 'model-monitoring' | 'registry' | 'members';
@@ -25,31 +22,8 @@ interface ShellProps {
 }
 
 export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children }) => {
-  const { user, activeTenant, organizations, switchTenant, logout, canManageRegistry, canManageMembers } = useAuth();
+  const { user, activeTenant, logout, canManageRegistry, canManageMembers } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [backendHealth, setBackendHealth] = useState<'checking' | 'healthy' | 'degraded'>('checking');
-
-  useEffect(() => {
-    let mounted = true;
-    const checkHealth = async () => {
-      try {
-        const live = await systemApi.getHealth();
-        if (mounted) {
-          setBackendHealth(live.status === 'ok' ? 'healthy' : 'degraded');
-        }
-      } catch {
-        if (mounted) {
-          setBackendHealth('degraded');
-        }
-      }
-    };
-    checkHealth();
-    const interval = setInterval(checkHealth, 30000);
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
-  }, []);
 
   const navItems = [
     { id: 'overview' as NavigationPage, label: 'Overview', icon: LayoutDashboard },
@@ -65,63 +39,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-canvas)' }}>
-      {/* Simulation & Regulatory Top Banner */}
-      <div
-        style={{
-          backgroundColor: 'var(--bg-subtle)',
-          borderBottom: '1px solid var(--border-subtle)',
-          padding: '0.35rem 1rem',
-          fontSize: '0.75rem',
-          color: 'var(--text-secondary)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '0.5rem',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-              color: 'var(--high-text)',
-              fontWeight: 600,
-            }}
-          >
-            <AlertTriangle size={13} aria-hidden="true" />
-            <span>NASA C-MAPSS REPLAY</span>
-          </span>
-          <span style={{ color: 'var(--text-muted)' }}>•</span>
-          <span>Experimental Turbofan RUL Simulation Demonstration</span>
-          <span style={{ color: 'var(--text-muted)' }}>•</span>
-          <span style={{ color: 'var(--text-muted)' }}>Not for production flight dispatch without certification</span>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span
-              style={{
-                width: '7px',
-                height: '7px',
-                borderRadius: '50%',
-                backgroundColor:
-                  backendHealth === 'healthy'
-                    ? 'var(--low-text)'
-                    : backendHealth === 'checking'
-                    ? 'var(--high-text)'
-                    : 'var(--urgent-text)',
-              }}
-            />
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-              Backend: {backendHealth === 'healthy' ? 'Live & Ready' : backendHealth === 'checking' ? 'Checking' : 'Unavailable'}
-            </span>
-          </span>
-        </div>
-      </div>
-
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--bg-canvas)' }}>
       {/* Main Header / Topbar */}
       <header className="portal-header"
         style={{
@@ -205,49 +123,9 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
           {/* User & Organization Context */}
           <div className="portal-user-context" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {/* Organization Switcher */}
-            {organizations.length > 1 ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                <Building size={14} style={{ color: 'var(--text-muted)' }} />
-                <select
-                  className="form-control"
-                  style={{ padding: '0.3rem 0.6rem', fontSize: '0.8125rem' }}
-                  value={activeTenant?.id || ''}
-                  onChange={(e) => switchTenant(e.target.value)}
-                  aria-label="Active Organization"
-                >
-                  {organizations.map((org) => (
-                    <option key={org.id} value={org.id}>
-                      {org.name} ({org.slug || 'local'})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : activeTenant ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.375rem',
-                  fontSize: '0.8125rem',
-                  color: 'var(--text-secondary)',
-                  backgroundColor: 'var(--bg-surface-elevated)',
-                  padding: '0.35rem 0.65rem',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                <Building size={14} style={{ color: 'var(--primary)' }} />
-                <span style={{ fontWeight: 500 }}>{activeTenant.name}</span>
-              </div>
-            ) : null}
-
             {/* User Profile & Role Badges */}
             {user && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <div style={{ textAlign: 'right', display: 'none' }} className="user-text-details">
-                  <div style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{user.display_name}</div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{user.email}</div>
-                </div>
 
                 <div style={{ display: 'flex', gap: '0.25rem' }}>
                   {activeTenant?.roles.map((role) => (
@@ -286,9 +164,11 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
           maxWidth: '1440px',
           width: '100%',
           margin: '0 auto',
+          minHeight: 0,
+          overflow: 'hidden',
         }}
       >
-        {/* Navigation Sidebar */}
+        {/* Navigation Sidebar (Fixed, Non-scrolling) */}
         <aside
           className={`portal-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}
           style={{
@@ -300,6 +180,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
             flexDirection: 'column',
             gap: '0.35rem',
             flexShrink: 0,
+            overflowY: 'auto',
           }}
         >
           <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0 0.75rem 0.5rem', letterSpacing: '0.05em' }}>
@@ -342,21 +223,7 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
             );
           })}
 
-          <div
-            style={{
-              marginTop: 'auto',
-              padding: '0.75rem',
-              backgroundColor: 'var(--bg-subtle)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
-              border: '1px solid var(--border-subtle)',
-            }}
-          >
-            <div>Model: <strong className="mono" style={{ color: 'var(--text-secondary)' }}>FD001-v1</strong></div>
-            <div>Dataset: <strong style={{ color: 'var(--text-secondary)' }}>C-MAPSS Replay</strong></div>
-            <div style={{ marginTop: '0.25rem' }}>Units: <span className="mono">Operating Cycles</span></div>
-          </div>
+
         </aside>
 
         {/* Main Content View */}
@@ -373,11 +240,6 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
       </div>
 
       <style>{`
-        @media (min-width: 768px) {
-          .user-text-details {
-            display: block !important;
-          }
-        }
         @media (max-width: 768px) {
           .mobile-menu-btn {
             display: inline-flex !important;

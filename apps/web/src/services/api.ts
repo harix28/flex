@@ -57,6 +57,12 @@ export function getCsrfToken(): string | null {
   return inMemoryCsrfToken;
 }
 
+export const classificationApi = {
+  get: (tenantId: string, machineId: string) => request<{
+    lifetime_stage: string; source_cycle: number; model_version: string; interpretation: string;
+  }>(`/api/v1/organizations/${tenantId}/machines/${machineId}/lifetime-classification`),
+};
+
 interface RequestOptions extends RequestInit {
   requiresCsrf?: boolean;
   requiresCsrfProtection?: boolean;

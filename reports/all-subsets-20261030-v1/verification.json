@@ -1,0 +1,12 @@
+{
+  "combined_engine_balanced_accuracy": 0.927190387228692,
+  "engine_bootstrap_95_percentile_interval": [
+    0.9210764438185134,
+    0.9332876549170325
+  ],
+  "replicates": 2000,
+  "seed": 42,
+  "code_sha256": "e0f4126ce47fd85a98acb68c544a8c5c9b2385215a00a20fb2f02d3742b043c1",
+  "test_source_sha256": "19240eb8f9da121902614d9fe9ae6ed7a8ae2008ba17d3b02b90f59b4f9c4afb",
+  "all_run_artifact_hashes_verified": true
+}

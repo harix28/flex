@@ -1,3 +1,13 @@
+## All-subset offline training update — 2026-10-30
+
+`sentinel/all_subsets_training.py` now performs strict validation, training-engine
+EDA, causal 97-feature extraction, train-only feature selection, five Random
+Forest classification scopes and four XGBoost RUL scopes. Actual results and
+limitations: [report](reports/all-subsets-20261030-v1/REPORT.md).
+Full backend run: 159 passed, 125 skipped. New tests: 15 passed. Database-dependent
+checks were not revalidated. Models remain experimental; no classifier API,
+automatic deployment or physical-health diagnosis was added.
+
 ## Container hardening update - 2026-10-28
 
 Deployment now requires explicit secrets, a private database network, a separate migration owner/runtime role, health-gated scripts and an HTTPS gateway (with an explicit loopback HTTP demo override). `/health/deployment` checks both model and database revision; existing health endpoints retain their contracts. Model artifacts and migration head `0007_mlops` are unchanged. Docker execution remains blocked on this host; configuration is not a production-readiness claim.
@@ -36,8 +46,8 @@ Verification: **246 backend tests passed across the full run and recovery retry*
 | Safe HTTP errors and request logging | Implemented; request IDs on all responses | sentinel/http_support.py |
 | Liveness / readiness | Implemented; legacy /health preserved | /health/live, /health/ready |
 | Local startup / verified replay | Implemented; private shared local key | scripts/start-local.ps1, scripts/check-local.ps1 |
-| Backend entrypoint | Implemented wrapper | services/api/app.py |
-| Training entrypoint | Implemented wrapper | ml/training/train.py |
+| Backend entrypoint | Implemented canonical | sentinel/serve.py |
+| Training entrypoint | Implemented canonical | sentinel/train.py |
 | Behaviour tests | 242 passed: 121 database-independent, 121 PostgreSQL; 2026-10-26 | tests/, reports/PHASE9_VALIDATION.md |
 | API contracts | Current and target separated | packages/contracts/ |
 | CI | Configured, not run on GitHub | .github/workflows/backend-tests.yml |
@@ -47,10 +57,10 @@ Verification: **246 backend tests passed across the full run and recovery retry*
 | Persistent RUL predictions & priority | Phase 6 implemented and PostgreSQL/HTTP verified | sentinel/predictions/, docs/PERSISTENT_PREDICTIONS.md |
 | Maintenance work orders & approval | Phase 7 implemented and PostgreSQL/HTTP verified | sentinel/work_orders/, docs/MAINTENANCE_WORKFLOW.md |
 | Frontend portal | Phase 8 implemented and end-to-end verified | apps/web/, docs/PORTAL_USER_GUIDE.md |
-| Workers / production auth | Pending | services/ |
-| Integrations / MCP | Pending | integrations/, mcp/ |
+| Workers / async jobs | Pending specification | docs/planned/services.md |
+| Integrations / MCP | Pending specification | docs/planned/integrations.md, docs/planned/mcp.md |
 | MLOps | Phase 9 implemented and verified | sentinel/mlops/, docs/MLOPS_OPERATIONS.md |
-| Docker / production deployment | Pending | infra/ |
+| Docker / container deployment | Implemented config & hardened gateway | DEPLOYMENT.md, infra/, docker-compose.yml |
 
 Preserved blueprint files describe the target, including sections written before implementation. Current status in this file and BACKEND_QUICKSTART.md takes precedence for what runs today. No new model training occurred during folder packaging.
 
@@ -61,7 +71,7 @@ database, production login or external integrations were introduced. One existin
 Starlette/httpx deprecation warning remains. See reports/phase1-smoke.json for
 executed HTTP evidence and reports/PHASE1_VALIDATION.md for commands and handoff.
 
-Next work: review remaining acceptance coverage and plan the authenticated frontend separately. Phase 7 corrective details are in docs/PHASE7_HANDOFF.md.
+Next work: review remaining acceptance coverage and plan the authenticated frontend separately. Phase 7 corrective details are in docs/history/PHASE7_HANDOFF.md.
 
 
 Phase 2 completed 2026-10-25: PostgreSQL 18.4 native isolated local cluster,
@@ -111,7 +121,7 @@ validated finite observations, bounded history/gap APIs and authenticated HTTP i
 CLI. Migration0004_replay; all181 tests passed (109 independent,72 PostgreSQL), no
 failed/skipped/blocked checks. Actual FD001 engine1 HTTP import31, rerun0 new/31 existing,
 conflict409 and tenant denial404. Saved-model result unchanged. No prediction storage.
-See reports/PHASE5_VALIDATION.md and docs/PHASE5_HANDOFF.md for Phase6.
+See reports/PHASE5_VALIDATION.md and docs/history/PHASE5_HANDOFF.md for Phase6.
 
 ## Phase 6 — Persistent RUL predictions and maintenance priority (2026-10-26)
 
@@ -123,7 +133,7 @@ session/CSRF authenticated endpoints (`POST/GET /api/v1/machines/{id}/prediction
 (`GET /api/v1/maintenance-priorities`) with policy `v1-experimental` (`urgent`, `high`, `medium`, `low`, `unknown`).
 Outdated and unavailable predictions are visibly distinct. Migration `0005_predictions`; all 195 tests passed.
 See [persistent predictions](docs/PERSISTENT_PREDICTIONS.md), [maintenance priority policy](docs/MAINTENANCE_PRIORITY_POLICY.md),
-[validation report](reports/PHASE6_VALIDATION.md), and [Phase 7 handoff](docs/PHASE6_HANDOFF.md).
+[validation report](reports/PHASE6_VALIDATION.md), and [Phase 7 handoff](docs/history/PHASE6_HANDOFF.md).
 
 ## Phase 7 — Maintenance Work Orders and Human Approval Workflow (2026-10-26)
 
@@ -138,7 +148,7 @@ Model predictions never automatically approve maintenance or shut down equipment
 Migration `0006_work_orders`; all 213 tests passed (121 database-independent, 92 PostgreSQL).
 Real HTTP loopback verification executed and logged to `reports/phase7-http.json`.
 See [maintenance workflow](docs/MAINTENANCE_WORKFLOW.md), [validation report](reports/PHASE7_VALIDATION.md),
-and [Phase 8 handoff](docs/PHASE7_HANDOFF.md).
+and [Phase 8 handoff](docs/history/PHASE7_HANDOFF.md).
 
 
 ## Phase 7 corrective follow-up (2026-10-26)
@@ -164,7 +174,7 @@ mandatory AMM 72-00 completion summaries, and append-only versioned notes and au
 Frontend tests: 17 Vitest tests passing; typecheck (`tsc --noEmit`) 0 errors; production build (`vite build`) clean.
 Live E2E integration verification executed across 10 steps via `scripts/verify_e2e_flow.py` with 100% success.
 See [Frontend Quickstart](FRONTEND_QUICKSTART.md), [Portal User Guide](docs/PORTAL_USER_GUIDE.md),
-[validation report](reports/PHASE8_VALIDATION.md), and [Phase 8 handoff](docs/PHASE8_HANDOFF.md).
+[validation report](reports/PHASE8_VALIDATION.md), and [Phase 8 handoff](docs/history/PHASE8_HANDOFF.md).
 
 ## Phase 9 — MLOps Foundation, Model Registry, Monitoring and Controlled Release (2026-10-26)
 
@@ -177,7 +187,7 @@ Implemented the MLOps foundation, lightweight PostgreSQL model registry, artifac
 - **Offline Ground-Truth Performance Evaluation**: Offline evaluation command joins predictions against verified official test labels (`RUL_FD001.txt`). Implements correct RUL-at-cutoff logic ($\text{RUL}(c) = \text{RUL}_{\text{final}} + (t_{\text{max}} - c)$), MAE, RMSE, signed bias, and overestimation frequency. Separates official test final cutoffs from multi-cutoff trajectories. Refuses work orders as pseudo ground truth. Live fleet accuracy honestly reported as unavailable.
 - **Portal Integration**: Added "Model & Monitoring" view (`/model-monitoring`) in `apps/web/` displaying active model version, verified digest, causal window, historical benchmark metrics, latency observability, drift status, ground-truth verification disclaimers, and audit runs history with metric details modal.
 - **Testing & Verification**: 6 PostgreSQL integration tests (`tests/test_mlops_postgres.py`) passing; full backend suite 242 tests passing; 24 frontend tests passing; typecheck clean; production Vite build clean; all 4 model artifacts in `runs/fd001-v1` bitwise preserved.
-See [MLOps Operations Manual](docs/MLOPS_OPERATIONS.md), [Model Release and Rollback](docs/MODEL_RELEASE_AND_ROLLBACK.md), [Model Monitoring Guide](docs/MODEL_MONITORING.md), [validation report](reports/PHASE9_VALIDATION.md), and [Phase 9 handoff](docs/PHASE9_HANDOFF.md).
+See [MLOps Operations Manual](docs/MLOPS_OPERATIONS.md), [Model Release and Rollback](docs/MODEL_RELEASE_AND_ROLLBACK.md), [Model Monitoring Guide](docs/MODEL_MONITORING.md), [validation report](reports/PHASE9_VALIDATION.md), and [Phase 9 handoff](docs/history/PHASE9_HANDOFF.md).
 
 
 ## RUL error analysis — 2026-10-27

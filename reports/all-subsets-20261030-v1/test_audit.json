@@ -1,0 +1,26 @@
+{
+  "FD001": {
+    "rows": 13096,
+    "engines": 100,
+    "rows_removed": 0,
+    "all_rows_validated": true
+  },
+  "FD002": {
+    "rows": 33991,
+    "engines": 259,
+    "rows_removed": 0,
+    "all_rows_validated": true
+  },
+  "FD003": {
+    "rows": 16596,
+    "engines": 100,
+    "rows_removed": 0,
+    "all_rows_validated": true
+  },
+  "FD004": {
+    "rows": 41214,
+    "engines": 248,
+    "rows_removed": 0,
+    "all_rows_validated": true
+  }
+}

@@ -101,8 +101,7 @@ single/double quotes surrounding a literal value. No variable interpolation,
 shell commands, multiline values, duplicate assignments or inline comments.
 
 The canonical server supports `--env-file`, `--bundle`, `--sha256` and `--port`.
-Existing explicit bundle/hash commands remain supported. The factory remains
-`sentinel.api.create_app`, re-exported by `services.api.app` for compatibility.
+Existing explicit bundle/hash commands remain supported. The factory remains `sentinel.api.create_app`, invoked directly by `sentinel.serve`.
 Use the canonical server command to retain loopback binding and safe logging.
 
 ## API behavior
@@ -277,7 +276,7 @@ an unversioned Phase 4 test binding is pinned to this exact file hash. Other ver
 or partitions require a newly registered machine. Read `/observations?limit=30` and
 `/data-quality?start_cycle=1&end_cycle=31` beneath the machine's detail_api_path.
 See [full contract and recovery](docs/REPLAY_INGESTION.md),
-[validation](reports/PHASE5_VALIDATION.md) and [Phase 6 handoff](docs/PHASE5_HANDOFF.md).
+[validation](reports/PHASE5_VALIDATION.md) and [Phase 6 handoff](docs/history/PHASE5_HANDOFF.md).
 
 ## Phase 6 persistent RUL predictions and maintenance priority
 
@@ -309,7 +308,7 @@ To run the automated real HTTP verification script:
 ```powershell
 $env:SENTINEL_TEST_ADMIN_URL = "postgresql+psycopg://meridian_local:PASSWORD@127.0.0.1:55432/postgres"
 See [persistent predictions](docs/PERSISTENT_PREDICTIONS.md), [maintenance priority policy](docs/MAINTENANCE_PRIORITY_POLICY.md),
-[validation](reports/PHASE6_VALIDATION.md) and [Phase 7 handoff](docs/PHASE6_HANDOFF.md).
+[validation](reports/PHASE6_VALIDATION.md) and [Phase 7 handoff](docs/history/PHASE6_HANDOFF.md).
 
 ## Phase 7 maintenance work orders and human approval workflow
 
@@ -365,7 +364,7 @@ To run the automated real HTTP loopback verification script on disposable Postgr
 ```
 
 See [maintenance workflow](docs/MAINTENANCE_WORKFLOW.md),
-[validation](reports/PHASE7_VALIDATION.md) and [Phase 8 handoff](docs/PHASE7_HANDOFF.md).
+[validation](reports/PHASE7_VALIDATION.md) and [Phase 8 handoff](docs/history/PHASE7_HANDOFF.md).
 
 
 ## Phase 7 corrected client contract

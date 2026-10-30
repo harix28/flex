@@ -12,7 +12,7 @@ tests exist.
 
 ## Work rules
 
-1. Read PRD.md, architecture.md and the relevant feature contract before editing.
+1. Read docs/blueprint/PRD.md, docs/blueprint/architecture.md and the relevant feature contract before editing.
 2. Build one vertical slice at a time. Preserve tenant isolation, explicit unknown status and human approval gates.
 3. Never invent model metrics, live data connectivity, incident findings or component labels.
 4. Keep API, DB, UI enums and OpenAPI synchronized. Schema changes require forward migration and rollback/restore notes.
