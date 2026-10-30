@@ -52,13 +52,19 @@ def build_member_1():
             "sentinel/classification.py",
             "sentinel/all_subsets_training.py",
             "sentinel/inference.py",
+            "sentinel/ml",
             "sentinel/mlops",
+            "scripts/benchmark_rul_models.py",
+            "reports/FD001_BENCHMARK_EVALUATION.json",
             "runs/all-subsets-20261030-v1/COMBINED/forest.json",
             "runs/all-subsets-20261030-v1/COMBINED/forest.npz",
             "tests/test_all_subsets_training.py",
             "tests/test_classification.py",
             "tests/test_rul_experiments.py",
+            "tests/test_ml_benchmarks.py",
             "tests/test_mlops_postgres.py",
+            "docs/ml/MODEL_CARD_RUL_FD001.md",
+            "docs/ml/CMAPSS_BENCHMARK_REPORT.md",
         ]
         for p in paths:
             add_path_to_zip(zf, p)
