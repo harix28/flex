@@ -14,9 +14,68 @@ import { PlanningPage } from './pages/PlanningPage';
 import { JobsPage } from './pages/JobsPage';
 import { IntegrationsPage } from './pages/IntegrationsPage';
 import { LoadingState } from './components/common/LoadingState';
+import { ShieldAlert, ArrowLeft } from 'lucide-react';
+
+interface RoleBoundaryGuardProps {
+  requiredRole: string;
+  featureName: string;
+  onReturnHome: () => void;
+}
+
+const RoleBoundaryGuard: React.FC<RoleBoundaryGuardProps> = ({
+  requiredRole,
+  featureName,
+  onReturnHome,
+}) => {
+  return (
+    <div
+      className="card card-elevated"
+      style={{
+        maxWidth: '560px',
+        margin: '3rem auto',
+        padding: '2.5rem',
+        textAlign: 'center',
+        border: '1px solid rgba(239, 68, 68, 0.25)',
+      }}
+    >
+      <div
+        style={{
+          width: '56px',
+          height: '56px',
+          borderRadius: '50%',
+          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 1.25rem',
+          color: '#ef4444',
+        }}
+      >
+        <ShieldAlert size={28} />
+      </div>
+      <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+        Role Boundary Access Blocked
+      </h2>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: '1.5', marginBottom: '1.5rem' }}>
+        Access to <strong>{featureName}</strong> is strictly segregated to prevent cross-role operational interference.
+        This feature requires <strong>{requiredRole}</strong> clearance.
+      </p>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={onReturnHome}
+        style={{ margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+      >
+        <ArrowLeft size={16} />
+        <span>Return to Permitted Workspace</span>
+      </button>
+    </div>
+  );
+};
 
 export const App: React.FC = () => {
-  const { isAuthenticated, isLoading, activeTenant } = useAuth();
+  const { isAuthenticated, isLoading, activeTenant, isGeneralManager, isMaintenanceEngineer, isTechnician } = useAuth();
+  const defaultHome: NavigationPage = isTechnician ? 'work-orders' : 'overview';
 
   const [currentPage, setCurrentPage] = useState<NavigationPage>('overview');
   const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
@@ -51,7 +110,7 @@ export const App: React.FC = () => {
       } else if (route === 'members') {
         setCurrentPage('members');
       } else {
-        setCurrentPage('overview');
+        setCurrentPage(isTechnician ? 'work-orders' : 'overview');
       }
     };
 
@@ -96,10 +155,16 @@ export const App: React.FC = () => {
   return (
     <Shell key={activeTenant?.id} currentPage={currentPage} onNavigate={navigateTo}>
       {currentPage === 'overview' && (
-        <OverviewPage
-          onSelectMachine={(mId) => navigateTo('machine-detail', { machineId: mId })}
-          onNavigateToRegistry={() => navigateTo('registry')}
-        />
+        isTechnician ? (
+          <WorkOrdersPage
+            onSelectWorkOrder={(woId) => navigateTo('work-order-detail', { workOrderId: woId })}
+          />
+        ) : (
+          <OverviewPage
+            onSelectMachine={(mId) => navigateTo('machine-detail', { machineId: mId })}
+            onNavigateToRegistry={() => navigateTo('registry')}
+          />
+        )
       )}
 
       {currentPage === 'machines' && (
@@ -133,15 +198,65 @@ export const App: React.FC = () => {
 
       {currentPage === 'planning' && <PlanningPage />}
 
-      {currentPage === 'jobs' && <JobsPage />}
+      {currentPage === 'jobs' && (
+        (isMaintenanceEngineer || isGeneralManager) ? (
+          <JobsPage />
+        ) : (
+          <RoleBoundaryGuard
+            requiredRole="Maintenance Engineer (Lead)"
+            featureName="Fleet Scoring & Background Jobs"
+            onReturnHome={() => navigateTo(defaultHome)}
+          />
+        )
+      )}
 
-      {currentPage === 'integrations' && <IntegrationsPage />}
+      {currentPage === 'integrations' && (
+        isGeneralManager ? (
+          <IntegrationsPage />
+        ) : (
+          <RoleBoundaryGuard
+            requiredRole="General Manager (Admin)"
+            featureName="Live Integrations & Security Keys"
+            onReturnHome={() => navigateTo(defaultHome)}
+          />
+        )
+      )}
 
-      {currentPage === 'model-monitoring' && <ModelMonitoringPage />}
+      {currentPage === 'model-monitoring' && (
+        (isMaintenanceEngineer || isGeneralManager) ? (
+          <ModelMonitoringPage />
+        ) : (
+          <RoleBoundaryGuard
+            requiredRole="Maintenance Engineer (Lead)"
+            featureName="Model Observability & MLOps Divergence"
+            onReturnHome={() => navigateTo(defaultHome)}
+          />
+        )
+      )}
 
-      {currentPage === 'registry' && <RegistryPage />}
+      {currentPage === 'registry' && (
+        isGeneralManager ? (
+          <RegistryPage />
+        ) : (
+          <RoleBoundaryGuard
+            requiredRole="General Manager (Admin)"
+            featureName="Fleet Registry Schema Configuration"
+            onReturnHome={() => navigateTo(defaultHome)}
+          />
+        )
+      )}
 
-      {currentPage === 'members' && <MembersPage />}
+      {currentPage === 'members' && (
+        isGeneralManager ? (
+          <MembersPage />
+        ) : (
+          <RoleBoundaryGuard
+            requiredRole="General Manager (Admin)"
+            featureName="Organization Members Governance"
+            onReturnHome={() => navigateTo(defaultHome)}
+          />
+        )
+      )}
     </Shell>
   );
 };

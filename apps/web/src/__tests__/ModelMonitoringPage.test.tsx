@@ -119,6 +119,13 @@ describe('ModelMonitoringPage', () => {
       canExecuteWorkOrders: () => true,
       canManageMembers: () => true,
       canIngestReplay: () => true,
+      isGeneralManager: false,
+      isMaintenanceEngineer: true,
+      isTechnician: false,
+      roleTitle: 'Maintenance Engineer (Lead)',
+      canManageIntegrations: () => false,
+      canManagePlanning: () => true,
+      canSubmitFleetJobs: () => true,
     });
 
     vi.mocked(mlopsApi.getModelInfo).mockResolvedValue(mockModelInfo);

@@ -25,25 +25,82 @@ interface ShellProps {
 }
 
 export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children }) => {
-  const { user, activeTenant, logout, canManageRegistry, canManageMembers } = useAuth();
+  const {
+    user,
+    logout,
+    canManageRegistry,
+    canManageMembers,
+    isGeneralManager,
+    isMaintenanceEngineer,
+    isTechnician,
+    roleTitle,
+  } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarHovered, setSidebarHovered] = useState(false);
 
-  const navItems = [
-    { id: 'overview' as NavigationPage, label: 'Overview', icon: LayoutDashboard },
-    { id: 'machines' as NavigationPage, label: 'Fleet Machines', icon: Cpu },
-    { id: 'work-orders' as NavigationPage, label: 'Work Orders', icon: Wrench },
-    { id: 'planning' as NavigationPage, label: 'Maintenance Planning', icon: Boxes },
-    { id: 'jobs' as NavigationPage, label: 'Background Jobs', icon: ListChecks },
-    { id: 'integrations' as NavigationPage, label: 'Live Integrations', icon: Share2 },
-    { id: 'model-monitoring' as NavigationPage, label: 'Model & Monitoring', icon: Activity },
-    ...(canManageRegistry()
-      ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }]
-      : []),
-    ...(canManageMembers()
-      ? [{ id: 'members' as NavigationPage, label: 'Organization Members', icon: Users }]
-      : []),
-  ];
+  let navItems: Array<{ id: NavigationPage; label: string; icon: any }> = [];
+
+  if (isTechnician) {
+    // Role 3: Maintenance Technician Allocation (Execution, telemetry inspection, parts lookup)
+    navItems = [
+      { id: 'work-orders', label: 'My Assigned Work Orders', icon: Wrench },
+      { id: 'machines', label: 'Assigned Engines & Telemetry', icon: Cpu },
+      { id: 'planning', label: 'Warehouse Parts Lookup', icon: Boxes },
+    ];
+  } else if (isMaintenanceEngineer && !isGeneralManager) {
+    // Role 2: Maintenance Engineer Allocation (Planning, approvals, fleet scoring, MLOps)
+    navItems = [
+      { id: 'overview', label: 'Engineering Dashboard', icon: LayoutDashboard },
+      { id: 'machines', label: 'Fleet Machines & Health', icon: Cpu },
+      { id: 'work-orders', label: 'Work Orders & Approvals', icon: Wrench },
+      { id: 'planning', label: 'Maintenance Planning', icon: Boxes },
+      { id: 'jobs', label: 'Fleet Scoring & Jobs', icon: ListChecks },
+      { id: 'model-monitoring', label: 'Model Observability & MLOps', icon: Activity },
+      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }] : []),
+    ];
+  } else {
+    // Role 1: General Manager (Admin) Allocation (Executive oversight, members, integrations)
+    navItems = [
+      { id: 'overview', label: 'Executive Overview', icon: LayoutDashboard },
+      { id: 'machines', label: 'Fleet Registry', icon: Cpu },
+      { id: 'work-orders', label: 'Work Orders Oversight', icon: Wrench },
+      { id: 'planning', label: 'Maintenance Planning', icon: Boxes },
+      { id: 'jobs', label: 'Background Outbox Jobs', icon: ListChecks },
+      { id: 'integrations', label: 'Live Integrations & Security', icon: Share2 },
+      { id: 'model-monitoring', label: 'Model Observability', icon: Activity },
+      ...(canManageRegistry() ? [{ id: 'registry' as NavigationPage, label: 'Registry Config', icon: Layers }] : []),
+      ...(canManageMembers() ? [{ id: 'members' as NavigationPage, label: 'Organization Members', icon: Users }] : []),
+    ];
+  }
+
+  const getRoleBadgeStyle = () => {
+    if (isGeneralManager) {
+      return {
+        backgroundColor: 'rgba(99, 102, 241, 0.15)',
+        color: '#6366f1',
+        border: '1px solid rgba(99, 102, 241, 0.3)',
+      };
+    }
+    if (isMaintenanceEngineer) {
+      return {
+        backgroundColor: 'rgba(14, 165, 233, 0.15)',
+        color: 'var(--primary)',
+        border: '1px solid rgba(14, 165, 233, 0.3)',
+      };
+    }
+    if (isTechnician) {
+      return {
+        backgroundColor: 'rgba(34, 197, 94, 0.15)',
+        color: 'var(--success)',
+        border: '1px solid rgba(34, 197, 94, 0.3)',
+      };
+    }
+    return {
+      backgroundColor: 'rgba(148, 163, 184, 0.15)',
+      color: 'var(--text-muted)',
+      border: '1px solid var(--border-subtle)',
+    };
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', backgroundColor: 'var(--bg-canvas)' }}>
@@ -133,17 +190,23 @@ export const Shell: React.FC<ShellProps> = ({ currentPage, onNavigate, children 
             {user && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
 
-                <div style={{ display: 'flex', gap: '0.25rem' }}>
-                  {activeTenant?.roles.map((role) => (
-                    <span
-                      key={role}
-                      className="badge badge-medium"
-                      style={{ fontSize: '0.6875rem', padding: '0.15rem 0.4rem' }}
-                    >
-                      <ShieldCheck size={11} />
-                      <span>{role}</span>
-                    </span>
-                  ))}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span
+                    style={{
+                      ...getRoleBadgeStyle(),
+                      padding: '0.25rem 0.65rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                    }}
+                    title={`Allocated Persona: ${roleTitle}`}
+                  >
+                    <ShieldCheck size={13} />
+                    <span>{roleTitle}</span>
+                  </span>
                 </div>
 
                 <button

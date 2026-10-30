@@ -21,6 +21,13 @@ interface AuthContextType {
   canExecuteWorkOrders: () => boolean;
   canManageMembers: () => boolean;
   canIngestReplay: () => boolean;
+  isGeneralManager: boolean;
+  isMaintenanceEngineer: boolean;
+  isTechnician: boolean;
+  roleTitle: string;
+  canManageIntegrations: () => boolean;
+  canManagePlanning: () => boolean;
+  canSubmitFleetJobs: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -171,6 +178,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [currentRoles]
   );
 
+  const isGeneralManager = currentRoles.includes('admin');
+  const isMaintenanceEngineer = currentRoles.includes('plant_manager');
+  const isTechnician = currentRoles.includes('technician') && !isMaintenanceEngineer && !isGeneralManager;
+
+  const roleTitle = isGeneralManager
+    ? 'General Manager (Admin)'
+    : isMaintenanceEngineer
+    ? 'Maintenance Engineer (Lead)'
+    : isTechnician
+    ? 'Maintenance Technician (A&P)'
+    : currentRoles[0] || 'Authenticated User';
+
+  const canManageIntegrations = useCallback(
+    () => isGeneralManager,
+    [isGeneralManager]
+  );
+
+  const canManagePlanning = useCallback(
+    () => isMaintenanceEngineer || isGeneralManager,
+    [isMaintenanceEngineer, isGeneralManager]
+  );
+
+  const canSubmitFleetJobs = useCallback(
+    () => isMaintenanceEngineer || isGeneralManager,
+    [isMaintenanceEngineer, isGeneralManager]
+  );
+
   const value: AuthContextType = {
     user,
     activeTenant,
@@ -190,6 +224,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     canExecuteWorkOrders,
     canManageMembers,
     canIngestReplay,
+    isGeneralManager,
+    isMaintenanceEngineer,
+    isTechnician,
+    roleTitle,
+    canManageIntegrations,
+    canManagePlanning,
+    canSubmitFleetJobs,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

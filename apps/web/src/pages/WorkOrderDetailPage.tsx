@@ -34,7 +34,7 @@ export const WorkOrderDetailPage: React.FC<WorkOrderDetailPageProps> = ({
   onNavigateBack,
   onSelectMachine,
 }) => {
-  const { activeTenant, user, canApproveWorkOrders, canAssignWorkOrders, canExecuteWorkOrders } = useAuth();
+  const { activeTenant, user, canApproveWorkOrders, canAssignWorkOrders, canExecuteWorkOrders, isTechnician } = useAuth();
 
   const [workOrder, setWorkOrder] = useState<WorkOrder | null>(null);
   const [history, setHistory] = useState<WorkOrderHistory | null>(null);
@@ -276,6 +276,28 @@ export const WorkOrderDetailPage: React.FC<WorkOrderDetailPageProps> = ({
           )}
         </div>
       </div>
+
+      {/* Approval Gate Notice for Technicians */}
+      {workOrder.status === 'draft' && isTechnician && (
+        <div
+          style={{
+            padding: '0.875rem 1.25rem',
+            backgroundColor: 'rgba(234, 179, 8, 0.08)',
+            border: '1px solid rgba(234, 179, 8, 0.3)',
+            borderRadius: 'var(--radius-md)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            color: '#eab308',
+            fontSize: '0.875rem',
+          }}
+        >
+          <AlertCircle size={20} style={{ flexShrink: 0 }} />
+          <div>
+            <strong>Approval Gate Active:</strong> This work order is pending review and sign-off by the <strong>Maintenance Engineer</strong>. Field execution actions will be unlocked once formal approval is granted.
+          </div>
+        </div>
+      )}
 
       {/* Outdated Evidence Warning Alert if applicable */}
       {workOrder.is_evidence_outdated && (

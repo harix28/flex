@@ -47,6 +47,13 @@ const TestConsumer = () => {
     switchTenant,
     canApproveWorkOrders,
     canExecuteWorkOrders,
+    isGeneralManager,
+    isMaintenanceEngineer,
+    isTechnician,
+    roleTitle,
+    canManageIntegrations,
+    canManagePlanning,
+    canSubmitFleetJobs,
   } = useAuth();
 
   if (isLoading) return <div>Loading auth...</div>;
@@ -59,6 +66,13 @@ const TestConsumer = () => {
       {activeTenant && <div data-testid="active-roles">{activeTenant.roles.join(', ')}</div>}
       <div data-testid="can-approve">{canApproveWorkOrders() ? 'yes' : 'no'}</div>
       <div data-testid="can-execute">{canExecuteWorkOrders() ? 'yes' : 'no'}</div>
+      <div data-testid="is-gm">{isGeneralManager ? 'yes' : 'no'}</div>
+      <div data-testid="is-me">{isMaintenanceEngineer ? 'yes' : 'no'}</div>
+      <div data-testid="is-tech">{isTechnician ? 'yes' : 'no'}</div>
+      <div data-testid="role-title">{roleTitle}</div>
+      <div data-testid="can-integrations">{canManageIntegrations() ? 'yes' : 'no'}</div>
+      <div data-testid="can-planning">{canManagePlanning() ? 'yes' : 'no'}</div>
+      <div data-testid="can-jobs">{canSubmitFleetJobs() ? 'yes' : 'no'}</div>
       <button onClick={() => login('admin@meridian.local', 'password123')}>Login</button>
       <button onClick={() => logout()}>Logout</button>
       <button onClick={() => switchTenant('tenant-beta')}>Switch to Beta</button>
@@ -111,6 +125,13 @@ describe('AuthContext', () => {
     expect(screen.getByTestId('active-roles')).toHaveTextContent('plant_manager');
     expect(screen.getByTestId('can-approve')).toHaveTextContent('yes');
     expect(screen.getByTestId('can-execute')).toHaveTextContent('yes');
+    expect(screen.getByTestId('is-me')).toHaveTextContent('yes');
+    expect(screen.getByTestId('is-gm')).toHaveTextContent('no');
+    expect(screen.getByTestId('is-tech')).toHaveTextContent('no');
+    expect(screen.getByTestId('role-title')).toHaveTextContent('Maintenance Engineer (Lead)');
+    expect(screen.getByTestId('can-integrations')).toHaveTextContent('no');
+    expect(screen.getByTestId('can-planning')).toHaveTextContent('yes');
+    expect(screen.getByTestId('can-jobs')).toHaveTextContent('yes');
   });
 
   it('switches active tenant and updates permissions', async () => {
@@ -142,6 +163,12 @@ describe('AuthContext', () => {
     expect(screen.getByTestId('active-roles')).toHaveTextContent('technician');
     expect(screen.getByTestId('can-approve')).toHaveTextContent('no');
     expect(screen.getByTestId('can-execute')).toHaveTextContent('yes');
+    expect(screen.getByTestId('is-tech')).toHaveTextContent('yes');
+    expect(screen.getByTestId('is-me')).toHaveTextContent('no');
+    expect(screen.getByTestId('role-title')).toHaveTextContent('Maintenance Technician (A&P)');
+    expect(screen.getByTestId('can-integrations')).toHaveTextContent('no');
+    expect(screen.getByTestId('can-planning')).toHaveTextContent('no');
+    expect(screen.getByTestId('can-jobs')).toHaveTextContent('no');
   });
 
   it('clears state on logout', async () => {

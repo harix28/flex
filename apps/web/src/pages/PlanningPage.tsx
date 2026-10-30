@@ -509,3 +509,4 @@ export const PlanningPage: React.FC = () => {
     </div>
   );
 };
+
