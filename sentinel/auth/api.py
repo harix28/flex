@@ -99,9 +99,14 @@ def auth_router(database, settings):
             raise HTTPException(429,'rate_limited',headers={'Retry-After':str(settings.login_window)})
         if failure:
             raise HTTPException(401,'invalid_credentials')
-        response.set_cookie(cookie,token,max_age=settings.session_seconds,httponly=True,
-                            secure=not settings.auth_localhost,samesite='lax',path='/')
-        return envelope(request,csrf_token=csrf_token,organizations=organizations)
+        req_origin = (request.headers.get('origin') or '').rstrip('/')
+        self_origin = f"{request.url.scheme}://{request.url.netloc}".rstrip('/')
+        is_cross_site = bool(req_origin and req_origin != self_origin)
+        samesite_mode = 'none' if (is_cross_site and not settings.auth_localhost) else 'lax'
+
+        response.set_cookie(cookie, token, max_age=settings.session_seconds, httponly=True,
+                            secure=not settings.auth_localhost, samesite=samesite_mode, path='/')
+        return envelope(request, csrf_token=csrf_token, organizations=organizations)
 
     @router.get('/auth/me')
     def me(request: Request):

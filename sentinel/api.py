@@ -83,10 +83,19 @@ def create_app(predictor=None, api_key=None, *, settings=None):
             import traceback, sys
             traceback.print_exc(file=sys.stderr)
             raise ConfigurationError(f'Classifier rejected: {e}') from None
-    if auth_settings.auth_origins:
-        app.add_middleware(CORSMiddleware, allow_origins=list(auth_settings.auth_origins),
-            allow_credentials=True, allow_methods=['GET','POST','PATCH','DELETE'],
-            allow_headers=['Content-Type','X-CSRF-Token','X-CSRF-Protection','Idempotency-Key'])
+    origins_list = list(auth_settings.auth_origins) if auth_settings.auth_origins else [
+        'https://meridian-sentinel.onrender.com',
+        'https://meridian-sentinel.vercel.app',
+        'https://flex-apps.vercel.app',
+        'http://localhost:8080',
+        'http://localhost:5173',
+        'http://127.0.0.1:8080',
+        'http://127.0.0.1:5173',
+    ]
+    app.add_middleware(CORSMiddleware, allow_origins=origins_list,
+        allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.onrender\.com|http://(localhost|127\.0\.0\.1)(:\d+)?",
+        allow_credentials=True, allow_methods=['GET','POST','PATCH','DELETE','OPTIONS'],
+        allow_headers=['Content-Type','X-CSRF-Token','X-CSRF-Protection','Idempotency-Key'])
     install_http_support(app)
     app.include_router(auth_router(database, auth_settings))
     app.include_router(registry_router(database, auth_settings))

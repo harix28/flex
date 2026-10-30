@@ -86,3 +86,4 @@ Feature importance analysis identifies the following primary degradation drivers
 1. **No Untrusted Deserialization**: The model is serialized as native JSON/NPZ arrays. Python `pickle` loading is strictly disallowed.
 2. **Cryptographic Hash Pinning**: The model bundle (`bundle.json`, `model.json`, `report.json`) must match the hardcoded SHA-256 digest on service startup.
 3. **Hermetic Test Enforcement**: Any alteration of model weights or feature ordering is caught by the regression test suite.
+

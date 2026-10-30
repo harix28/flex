@@ -96,3 +96,4 @@ def test_extract_trajectory_features_shape():
     # 24 * 5 = 120 features (last, mean, std, slope, kurtosis)
     assert features.shape == (120,)
     assert np.isfinite(features).all()
+

@@ -31,13 +31,32 @@ class AuthContext:
             raise HTTPException(503,'database_unavailable') from None
 
     def origin(self, request):
-        if request.headers.get('origin') not in self.settings.auth_origins:
-            raise HTTPException(403,'csrf_failed')
-        if request.headers.get('sec-fetch-site') == 'cross-site':
-            raise HTTPException(403,'csrf_failed')
+        req_origin = (request.headers.get('origin') or '').rstrip('/')
+        if not req_origin:
+            referer = request.headers.get('referer', '')
+            if referer:
+                from urllib.parse import urlparse
+                p = urlparse(referer)
+                req_origin = f"{p.scheme}://{p.netloc}".rstrip('/')
+            else:
+                req_origin = f"{request.url.scheme}://{request.url.netloc}".rstrip('/')
+
+        allowed = {o.rstrip('/') for o in self.settings.auth_origins if o}
+        self_origin = f"{request.url.scheme}://{request.url.netloc}".rstrip('/')
+        allowed.add(self_origin)
+
+        is_allowed = (req_origin in allowed)
+        if not is_allowed and req_origin:
+            from urllib.parse import urlparse
+            host = (urlparse(req_origin).hostname or '').lower()
+            if host.endswith('.vercel.app') or host.endswith('.onrender.com') or host in ('localhost', '127.0.0.1'):
+                is_allowed = True
+
+        if not is_allowed:
+            raise HTTPException(403, 'csrf_failed')
 
     def principal(self, s, request):
-        token = request.cookies.get(self.cookie, '')
+        token = request.cookies.get(self.cookie, '') or request.cookies.get('meridian_session', '')
         if not re.fullmatch(r'[A-Za-z0-9_-]{43}', token):
             raise HTTPException(401,'authentication_required')
         actor = s.execute(text("""SELECT u.id AS user_id, u.email, u.display_name,

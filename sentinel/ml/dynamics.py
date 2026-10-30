@@ -79,3 +79,4 @@ def extract_trajectory_features(window_data: np.ndarray) -> np.ndarray:
     kurt = compute_kurtosis(arr)
 
     return np.concatenate([last_val, mean_val, std_val, slopes, kurt])
+

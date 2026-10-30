@@ -68,3 +68,4 @@ def compute_regression_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[s
         "late_predictions_count": late_count,
         "safety_margin_ratio": round(early_count / len(yt), 4) if len(yt) > 0 else 0.0,
     }
+
