@@ -10,6 +10,7 @@ from .predictions.api import predictions_router
 from .classification import LifetimeClassifier, classification_router
 from .work_orders.api import work_orders_router
 from .mlops.api import mlops_router
+from .audit.api import audit_router
 from .mlops.deployment import record_activation
 from .config import Settings
 from fastapi.middleware.cors import CORSMiddleware
@@ -87,6 +88,7 @@ def create_app(predictor=None, api_key=None, *, settings=None):
     app.include_router(predictions_router(database, auth_settings, predictor))
     app.include_router(work_orders_router(database, auth_settings))
     app.include_router(mlops_router(database, auth_settings, predictor))
+    app.include_router(audit_router(database, auth_settings))
 
     def authorized(x_api_key: str = Header(default='')):
         if not hmac.compare_digest(x_api_key.encode('utf-8'), api_key.encode('ascii')):

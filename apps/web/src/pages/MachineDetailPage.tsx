@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { registryApi, ingestionApi, predictionsApi, workOrdersApi } from '../services/api';
+import { registryApi, ingestionApi, predictionsApi, workOrdersApi, auditApi } from '../services/api';
 import {
   Machine,
   Installation,
@@ -12,6 +12,7 @@ import {
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { SensorTrendChart } from '../components/charts/SensorTrendChart';
 import { PredictionCard } from '../components/predictions/PredictionCard';
+import { LifetimeStageCard } from '../components/predictions/LifetimeStageCard';
 import { RunPredictionModal } from '../components/predictions/RunPredictionModal';
 import { WorkOrderCreateModal } from '../components/work-orders/WorkOrderCreateModal';
 import { PriorityBadge, StatusBadge } from '../components/common/Badge';
@@ -20,6 +21,7 @@ import { ErrorState } from '../components/common/ErrorState';
 import {
   Cpu,
   Wrench,
+  FileDown,
   History,
   Activity,
   Plus,
@@ -264,6 +266,19 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
               <span>Draft Work Order</span>
             </button>
           )}
+
+          {activeTenant && (
+            <a
+              href={auditApi.getDossierUrl(activeTenant.id, machineId)}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-secondary"
+              title="Download formal FAA/EASA-styled audit investigation packet (PDF)"
+            >
+              <FileDown size={16} />
+              <span>Audit Dossier (PDF)</span>
+            </a>
+          )}
         </div>
       </div>
 
@@ -423,6 +438,13 @@ export const MachineDetailPage: React.FC<MachineDetailPageProps> = ({
             </button>
           )}
         </div>
+
+        {/* Lifetime Stage Assessment */}
+        {activeTenant && machine && machine.data_source === 'nasa_replay' && (
+          <div style={{ marginBottom: '1.25rem' }}>
+            <LifetimeStageCard tenantId={activeTenant.id} machineId={machineId} />
+          </div>
+        )}
 
         {latestPrediction ? (
           <PredictionCard

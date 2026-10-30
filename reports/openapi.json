@@ -4030,6 +4030,58 @@
         }
       }
     },
+    "/api/v1/organizations/{organization_id}/machines/{machine_id}/audit-dossier": {
+      "get": {
+        "tags": [
+          "Audit & Compliance"
+        ],
+        "summary": "Get Audit Dossier",
+        "description": "Generates a downloadable, cryptographic PDF audit dossier for an engine asset.",
+        "operationId": "get_audit_dossier_api_v1_organizations__organization_id__machines__machine_id__audit_dossier_get",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "machine_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Machine Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",

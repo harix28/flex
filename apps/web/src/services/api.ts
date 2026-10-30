@@ -736,6 +736,11 @@ export const systemApi = {
 // MLOPS & MODEL MONITORING
 // ==========================================
 
+export const auditApi = {
+  getDossierUrl: (tenantId: string, machineId: string) =>
+    `/api/v1/organizations/${tenantId}/machines/${machineId}/audit-dossier`,
+};
+
 export const mlopsApi = {
   async getModelInfo(tenantId: string): Promise<ModelInfo> {
     return request<ModelInfo>(
